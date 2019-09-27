@@ -1,0 +1,40 @@
+body {
+    background: #20262E;
+    padding: 20px;
+    font-family: Helvetica;
+    color: white;
+}
+
+#key {
+    display: inline-block;
+    border: 1px solid white;
+    border-radius: 3px;
+    width: 2em;
+    height: 2em;
+    text-align: center;
+    transition: all .075s;
+}
+
+#key-text {
+    display: inline-block;
+    padding: 0.5em 0.5em;
+}
+
+.key-small {
+    transform: scale(0.9);
+}
+
+#key-dict {
+    margin-top: 1.5em;
+}
+
+.border-container {
+    width: 12em;
+    border: 2px solid white;
+    padding: 1em;
+    border-radius: 0.5em;
+}
+
+p {
+    text-decoration: underline;
+}
