@@ -1,15 +1,24 @@
-var keyFuncs = {
+var produceKeyFuncs = {
     'd':mineIron,
     's':mineCoal,
     'f':ironToFurnace,
-    'a':coalToFurnace
+    'a':coalToFurnace,
+    'q':() => {return changeMode('sell')},
 };
+
+var sellKeyFuncs = {
+    'q':() => {return changeMode('produce')},
+    'num':num => {sellItem(num)}
+}
+
+var masterKeyFuncs = {produce:produceKeyFuncs,sell:sellKeyFuncs};
 
 var inventories = {player:{},furnace:{}};
 
-var iron_ore = {name:'iron_ore'};
-var coal = {name:'coal'};
-var ironBar = {name:'iron_bar'};
+var iron_ore = {name:'iron_ore',val:2};
+var coal = {name:'coal',val:3};
+var iron_bar = {name:'iron_bar',val:8};
+var items = {iron_ore:iron_ore,coal:coal,iron_bar:iron_bar};
 
 var coalCooldown = 0;
 var maxCoalCooldown = 10;
@@ -18,14 +27,21 @@ var maxIronCooldown = 25;
 var smeltCooldown = 0;
 var maxSmeltCooldown = 30;
 
+let money = 0;
+
+var mode = "produce";
+
 $(document).keydown(function(e){
 	$('#key-text').html(e.key);
 	$('#key').addClass('key-small');
 })
 
 $(document).keyup(function(e){
+    let keyFuncs = masterKeyFuncs[mode];
     $('#key').removeClass('key-small');
-    if (keyFuncs[e.key])
+    if (!isNaN(e.key) && keyFuncs.num)
+        keyFuncs.num(e.key);
+    else if (keyFuncs[e.key])
         keyFuncs[e.key]();
 });
 
@@ -70,7 +86,7 @@ function furnaceTick() {
         ironCooldown = maxIronCooldown;
     }
     if (ironCooldown && coalCooldown && !smeltCooldown) {
-        addItem(ironBar,'player')
+        addItem(iron_bar,'player')
         smeltCooldown = maxSmeltCooldown;
     }
 }
@@ -84,24 +100,50 @@ function addItem(item,invName,amount = 1) {
     renderInventoryTable(invName);
 }
 
+function sellItem(num) {
+    let item = Object.keys(inventories['player'])[num - 1];
+    let amount = removeItem(item,'player','all');
+    money += amount * items[item].val;
+    $('#money-val').html(money);
+}
+
 function removeItem(item,invName,amount = 1) {
     let inventory = inventories[invName];
-    if (inventory[item.name] == undefined || inventory[item.name] < amount)
-        return false;
-    inventory[item.name] -= amount;
+    let currItem = (item.name == undefined ? item : item.name);
+    if (amount == 'all')
+        amount = inventory[currItem];
+    if (inventory[currItem] == undefined || inventory[currItem] < amount)
+        return 0;
+    inventory[currItem] -= amount;
     renderInventoryTable(invName);
-    return true;
+    return amount;
 }
 
 function renderInventoryTable(invName) {
     let table = '';
+    let count = 1;
     for (let i in inventories[invName]) {
         table += '<tr>';
         table += '<td>' + prettyPrint(i) + ':</td>';
-        table += '<td>' + inventories[invName][i] + '</td>';
+        table += '<td>' + inventories[invName][i] + ' x</td>';
+        if (mode == 'sell') {
+            table += '<td> $' + items[i].val + '</td>';
+            table += '<td> = $' + items[i].val * inventories[invName][i] + 
+            ' [' + count + ']</td>';
+        }
         table += '</tr>';
+        count++;
     }
     $('#' + invName +'Table').html(table);
+}
+
+function changeMode(given) {
+    if (given == 'sell')
+        $('#sell-items').html('Exit [q]')
+    else if (mode == 'sell')
+        $('#sell-items').html('Sell Items [q]')
+    mode = given;
+    renderInventoryTable('player');
 }
 
 function prettyPrint(given) {

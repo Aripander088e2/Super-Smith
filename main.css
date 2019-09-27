@@ -29,12 +29,16 @@ body {
 }
 
 .border-container {
-    width: 12em;
+    width: 14em;
     border: 2px solid white;
     padding: 1em;
     border-radius: 0.5em;
 }
 
-p {
+.title {
     text-decoration: underline;
+}
+
+#sell-items { 
+    float:right;
 }

@@ -4,6 +4,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     </head>
     <body>
+        <div style="float:right">$<span id="money-val">0</span></div> 
         <p>Mine Iron [d]</p>
         <p>Mine Coal [s]</p>
         <p>Add Iron To Furnace [f]</p>
@@ -11,15 +12,15 @@
         <div id="key">
             <div id="key-text"></div>
         </div>
-        <div id="key-dict"></div>          
+        <div id="key-dict"></div>         
         <div class="border-container">
-            <p>Inventory</p>
+            <p><span class="title">Inventory</span> <span id="sell-items">Sell Items [q]</span></p>
             <table id="playerTable">
     
             </table>
         </div>
         <div class="border-container">
-                <p>Furnace</p>
+                <p class="title">Furnace</p>
                 <table id="furnaceTable">
         
                 </table>
