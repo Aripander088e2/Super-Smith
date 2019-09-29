@@ -2,13 +2,21 @@ var produceKeyFuncs = {
     'd':mineIron,
     's':mineCoal,
     'f':ironToFurnace,
-    'a':coalToFurnace,
-    'q':() => {return changeMode('sell')},
+    'a':coalToFurnace
 };
 
 var sellKeyFuncs = {
-    'q':() => {return changeMode('produce')},
     'num':num => {sellItem(num)}
+}
+
+var universalKeyFuncs = {
+    'o':() => {return changeMode('sell')},
+    'p':() => {return changeMode('upgrade')},
+}
+
+var modeDict = {
+    'sell':{id:'sell-items',text:'Sell Items',key:'o'},
+    'upgrade':{id:'upgrade',text:'Buy Upgrades',key:'p'}
 }
 
 var masterKeyFuncs = {produce:produceKeyFuncs,sell:sellKeyFuncs};
@@ -41,6 +49,8 @@ $(document).keyup(function(e){
     $('#key').removeClass('key-small');
     if (!isNaN(e.key) && keyFuncs.num)
         keyFuncs.num(e.key);
+    else if (universalKeyFuncs[e.key])
+        universalKeyFuncs[e.key]();
     else if (keyFuncs[e.key])
         keyFuncs[e.key]();
 });
@@ -138,11 +148,14 @@ function renderInventoryTable(invName) {
 }
 
 function changeMode(given) {
-    if (given == 'sell')
-        $('#sell-items').html('Exit [q]')
-    else if (mode == 'sell')
-        $('#sell-items').html('Sell Items [q]')
-    mode = given;
+    if (mode == 'produce') {
+        $('#' + modeDict[given].id).html('Exit [' + modeDict[given].key + ']')
+        mode = given;
+    }
+    else {
+        $('#' + modeDict[given].id).html(modeDict[given].text + ' [' + modeDict[given].key + ']')
+        mode = 'produce';
+    }
     renderInventoryTable('player');
 }
 
