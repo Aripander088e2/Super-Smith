@@ -1,25 +1,45 @@
+var coalMineMult = 1;
+var coalMoveMult = 1;
+var furnaceSpeed = 1;
+
 var produceKeyFuncs = {
     'd':mineIron,
     's':mineCoal,
-    'f':ironToFurnace,
-    'a':coalToFurnace
+    'k':ironToFurnace,
+    'l':coalToFurnace
 };
 
 var sellKeyFuncs = {
     'num':num => {sellItem(num)}
 }
 
+var upgradeKeyFuncs = {
+    'num':num => {buyUpgrade(num)}
+}
+
 var universalKeyFuncs = {
+    'i':() => {return changeMode('produce')},
     'o':() => {return changeMode('sell')},
     'p':() => {return changeMode('upgrade')},
 }
 
 var modeDict = {
-    'sell':{id:'sell-items',text:'Sell Items',key:'o'},
-    'upgrade':{id:'upgrade',text:'Buy Upgrades',key:'p'}
+    'produce':{key:'i',
+        show:['inventory-container','furnace-container']
+    },
+    'sell':{id:'sell-items',text:'Sell Items',key:'o',
+        show:['inventory-container']
+    },
+    'upgrade':{id:'upgrade',text:'Buy Upgrades',key:'p',
+        show:['upgrade-container']
+    }
 }
 
-var masterKeyFuncs = {produce:produceKeyFuncs,sell:sellKeyFuncs};
+var masterKeyFuncs = {
+    produce:produceKeyFuncs,
+    sell:sellKeyFuncs,
+    upgrade:upgradeKeyFuncs
+};
 
 var inventories = {player:{},furnace:{}};
 
@@ -28,10 +48,6 @@ var coal = {name:'coal',val:3};
 var iron_bar = {name:'iron_bar',val:8};
 var items = {iron_ore:iron_ore,coal:coal,iron_bar:iron_bar};
 
-var coalCooldown = 0;
-var maxCoalCooldown = 10;
-var ironCooldown = 0;
-var maxIronCooldown = 25;
 var smeltCooldown = 0;
 var maxSmeltCooldown = 30;
 
@@ -60,7 +76,7 @@ function mineIron() {
 }
 
 function mineCoal() {
-    addItem(coal,'player');
+    addItem(coal,'player',1 * coalMineMult);
 }
 
 function ironToFurnace() {
@@ -69,8 +85,9 @@ function ironToFurnace() {
 }
 
 function coalToFurnace() {
-    if (removeItem(coal,'player'))
-        addItem(coal,'furnace');
+    let amount = 1 * coalMoveMult;
+    if (removeItem(coal,'player',amount))
+        addItem(coal,'furnace',amount);
 }
 
 setInterval(gameTick,100);
@@ -81,24 +98,13 @@ function gameTick() {
 
 function furnaceTick() {
     let inv = inventories.furnace;
-    if (coalCooldown)
-        coalCooldown--;
-    if (ironCooldown)
-        ironCooldown--;
-    if (smeltCooldown)
-        smeltCooldown--;
-    if (inv.coal && !coalCooldown) {
-        removeItem(coal,'furnace')
-        coalCooldown = maxCoalCooldown;
-    }
-    if (inv.iron_ore && !ironCooldown) {
+    if (inv.iron_ore && inv.coal >= 2 && smeltCooldown <= 0) {
         removeItem(iron_ore,'furnace')
-        ironCooldown = maxIronCooldown;
-    }
-    if (ironCooldown && coalCooldown && !smeltCooldown) {
+        removeItem(coal,'furnace',2)
         addItem(iron_bar,'player')
-        smeltCooldown = maxSmeltCooldown;
+        smeltCooldown = maxSmeltCooldown/furnaceSpeed;
     }
+    smeltCooldown--;
 }
 
 function addItem(item,invName,amount = 1) {
@@ -113,8 +119,19 @@ function addItem(item,invName,amount = 1) {
 function sellItem(num) {
     let item = Object.keys(inventories['player'])[num - 1];
     let amount = removeItem(item,'player','all');
-    money += amount * items[item].val;
-    $('#money-val').html(money);
+    changeMoney(amount * items[item].val);
+}
+
+function buyUpgrade(num) {
+    let upgrade = upgrades.filter(curr =>{
+        return !curr.bought;
+    })[num - 1];
+    if (money > upgrade.cost) {
+        upgrade.func();
+        upgrade.bought = true;
+        renderUpgradeTable();
+        changeMoney(-1 * upgrade.cost)
+    }
 }
 
 function removeItem(item,invName,amount = 1) {
@@ -129,6 +146,12 @@ function removeItem(item,invName,amount = 1) {
     return amount;
 }
 
+function changeMoney(amount) {
+    console.log(amount,money)
+    money += amount;
+    $('#money-val').html(money);
+}
+
 function renderInventoryTable(invName) {
     let table = '';
     let count = 1;
@@ -136,7 +159,7 @@ function renderInventoryTable(invName) {
         table += '<tr>';
         table += '<td>' + prettyPrint(i) + ':</td>';
         table += '<td>' + inventories[invName][i] + ' x</td>';
-        if (mode == 'sell') {
+        if (mode == 'sell' && invName == 'player') {
             table += '<td> $' + items[i].val + '</td>';
             table += '<td> = $' + items[i].val * inventories[invName][i] + 
             ' [' + count + ']</td>';
@@ -144,19 +167,40 @@ function renderInventoryTable(invName) {
         table += '</tr>';
         count++;
     }
-    $('#' + invName +'Table').html(table);
+    $('#' + invName +'-table').html(table);
+}
+
+function renderUpgradeTable() {
+    let table = '';
+    let count = 1;
+    for (let i of upgrades) {
+        if (!i.bought) {
+            table += '<tr>';
+            table += '<td>' + i.name + '</td>';
+            table += '<td>$' + i.cost + ' [' + count +']</td>';
+            table += '</tr>';
+            count++;
+        }
+    }
+    $('#upgrade-table').html(table);
 }
 
 function changeMode(given) {
-    if (mode == 'produce') {
+    // If user hits the button they just hit go back
+    if (given == mode)
+        given = 'produce';
+    if (modeDict[given].id)
         $('#' + modeDict[given].id).html('Exit [' + modeDict[given].key + ']')
-        mode = given;
-    }
-    else {
-        $('#' + modeDict[given].id).html(modeDict[given].text + ' [' + modeDict[given].key + ']')
-        mode = 'produce';
-    }
-    renderInventoryTable('player');
+    for (let i of modeDict[mode].show)
+        $('#' + i).hide();
+    for (let i of modeDict[given].show)
+        $('#' + i).show();
+    $('#' + modeDict[mode].id).html(modeDict[mode].text + ' [' + modeDict[mode].key + ']')
+    mode = given;
+    if (given == 'upgrade')
+        renderUpgradeTable();
+    else
+        renderInventoryTable('player');
 }
 
 function prettyPrint(given) {
