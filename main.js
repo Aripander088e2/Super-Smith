@@ -2,9 +2,6 @@ var coalMineMult = 1;
 var coalMoveMult = 1;
 var furnaceSpeed = 1;
 
-var autoCoalMaxCooldown = 0;
-var autoCoalCooldown = 0;
-
 var produceKeyFuncs = {
     'd':mineIron,
     's':mineCoal,
@@ -41,7 +38,7 @@ var modeDict = {
     'upgrade':{id:'upgrade',text:'Buy Upgrades',key:'p',
         show:['upgrade-container']
     },
-    'automation':{id:'upgrade',text:'Automation',key:'u',
+    'automation':{id:'automation',text:'Automation',key:'u',
         show:['upgrade-container']
     }
 }
@@ -49,7 +46,8 @@ var modeDict = {
 var masterKeyFuncs = {
     produce:produceKeyFuncs,
     sell:sellKeyFuncs,
-    upgrade:upgradeKeyFuncs
+    upgrade:upgradeKeyFuncs,
+    automation:automationKeyFuncs
 };
 
 var inventories = {player:{},furnace:{}};
@@ -60,7 +58,7 @@ var iron_bar = {name:'iron_bar',val:8};
 var items = {iron_ore:iron_ore,coal:coal,iron_bar:iron_bar};
 
 var smeltCooldown = 0;
-var maxSmeltCooldown = 30;
+var maxSmeltCooldown = 60;
 
 let money = 0;
 
@@ -101,21 +99,11 @@ function coalToFurnace() {
         addItem(coal,'furnace',amount);
 }
 
-setInterval(gameTick,100);
+setInterval(gameTick,50);
 
 function gameTick() {
     furnaceTick();
     autoMineTick();
-}
-
-function autoMineTick() {
-    if (autoCoalMaxCooldown) {
-        if (autoCoalCooldown <= 0) {
-            addItem(coal,'player',1);
-            autoCoalCooldown = autoCoalMaxCooldown;
-        }
-        autoCoalCooldown--;
-    }
 }
 
 function furnaceTick() {
@@ -148,7 +136,7 @@ function buyUpgrade(num,list) {
     let upgrade = list.filter(curr =>{
         return !curr.bought;
     })[num - 1];
-    if (money > upgrade.cost) {
+    if (money >= upgrade.cost) {
         upgrade.func();
         upgrade.bought = true;
         renderUpgradeTable(list);
@@ -169,7 +157,6 @@ function removeItem(item,invName,amount = 1) {
 }
 
 function changeMoney(amount) {
-    console.log(amount,money)
     money += amount;
     $('#money-val').html(money);
 }
@@ -193,7 +180,6 @@ function renderInventoryTable(invName) {
 }
 
 function renderUpgradeTable(list) {
-    console.log(list)
     let table = '';
     let count = 1;
     for (let i of list) {
