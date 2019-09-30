@@ -2,6 +2,9 @@ var coalMineMult = 1;
 var coalMoveMult = 1;
 var furnaceSpeed = 1;
 
+var autoCoalMaxCooldown = 0;
+var autoCoalCooldown = 0;
+
 var produceKeyFuncs = {
     'd':mineIron,
     's':mineCoal,
@@ -14,13 +17,18 @@ var sellKeyFuncs = {
 }
 
 var upgradeKeyFuncs = {
-    'num':num => {buyUpgrade(num)}
+    'num':num => {buyUpgrade(num,upgrades)}
+}
+
+var automationKeyFuncs = {
+    'num':num => {buyUpgrade(num,automations)}
 }
 
 var universalKeyFuncs = {
     'i':() => {return changeMode('produce')},
     'o':() => {return changeMode('sell')},
     'p':() => {return changeMode('upgrade')},
+    'u':() => {return changeMode('automation')},
 }
 
 var modeDict = {
@@ -31,6 +39,9 @@ var modeDict = {
         show:['inventory-container']
     },
     'upgrade':{id:'upgrade',text:'Buy Upgrades',key:'p',
+        show:['upgrade-container']
+    },
+    'automation':{id:'upgrade',text:'Automation',key:'u',
         show:['upgrade-container']
     }
 }
@@ -94,6 +105,17 @@ setInterval(gameTick,100);
 
 function gameTick() {
     furnaceTick();
+    autoMineTick();
+}
+
+function autoMineTick() {
+    if (autoCoalMaxCooldown) {
+        if (autoCoalCooldown <= 0) {
+            addItem(coal,'player',1);
+            autoCoalCooldown = autoCoalMaxCooldown;
+        }
+        autoCoalCooldown--;
+    }
 }
 
 function furnaceTick() {
@@ -122,14 +144,14 @@ function sellItem(num) {
     changeMoney(amount * items[item].val);
 }
 
-function buyUpgrade(num) {
-    let upgrade = upgrades.filter(curr =>{
+function buyUpgrade(num,list) {
+    let upgrade = list.filter(curr =>{
         return !curr.bought;
     })[num - 1];
     if (money > upgrade.cost) {
         upgrade.func();
         upgrade.bought = true;
-        renderUpgradeTable();
+        renderUpgradeTable(list);
         changeMoney(-1 * upgrade.cost)
     }
 }
@@ -170,10 +192,11 @@ function renderInventoryTable(invName) {
     $('#' + invName +'-table').html(table);
 }
 
-function renderUpgradeTable() {
+function renderUpgradeTable(list) {
+    console.log(list)
     let table = '';
     let count = 1;
-    for (let i of upgrades) {
+    for (let i of list) {
         if (!i.bought) {
             table += '<tr>';
             table += '<td>' + i.name + '</td>';
@@ -198,7 +221,9 @@ function changeMode(given) {
     $('#' + modeDict[mode].id).html(modeDict[mode].text + ' [' + modeDict[mode].key + ']')
     mode = given;
     if (given == 'upgrade')
-        renderUpgradeTable();
+        renderUpgradeTable(upgrades);
+    else if (given == 'automation')
+        renderUpgradeTable(automations);
     else
         renderInventoryTable('player');
 }
