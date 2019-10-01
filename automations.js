@@ -1,19 +1,14 @@
 var autoCoalMaxCooldown = 0;
 var autoCoalCooldown = 0;
 
-let autoCoal = {name:'Automatic Coal Miner', cost:30,bought:false,func(){
-    autoCoalMaxCooldown = 60;
-}}
+let autoCoal = {name:'Automatic Coal Miner',level:0,cost:30,func(){
+    autoCoalMaxCooldown = 60 / (1 + Math.pow(this.level,1.6));
+    this.cost = parseInt(this.cost + 50 * Math.pow(2, (this.level+1)/ 5));
+    this.level++;
+    renderAutomationTable();
+}};
 
-let autoCoal2 = {name:'Automatic Coal Miner', cost:80,bought:false,func(){
-    autoCoalMaxCooldown = 30;
-}}
-
-let autoCoal3 = {name:'Automatic Coal Miner', cost:220,bought:false,func(){
-    autoCoalMaxCooldown = 20;
-}}
-
-var automations = [autoCoal,autoCoal2,autoCoal3];
+var automations = [autoCoal];
 
 function autoMineTick() {
     if (autoCoalMaxCooldown) {

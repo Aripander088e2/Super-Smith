@@ -14,11 +14,11 @@ var sellKeyFuncs = {
 }
 
 var upgradeKeyFuncs = {
-    'num':num => {buyUpgrade(num,upgrades)}
+    'num':num => {buyUpgrade(num,upgrades,renderUpgradeTable)}
 }
 
 var automationKeyFuncs = {
-    'num':num => {buyUpgrade(num,automations)}
+    'num':num => {buyUpgrade(num,automations,renderAutomationTable)}
 }
 
 var universalKeyFuncs = {
@@ -39,7 +39,7 @@ var modeDict = {
         show:['upgrade-container']
     },
     'automation':{id:'automation',text:'Automation',key:'u',
-        show:['upgrade-container']
+        show:['automation-container']
     }
 }
 
@@ -132,14 +132,15 @@ function sellItem(num) {
     changeMoney(amount * items[item].val);
 }
 
-function buyUpgrade(num,list) {
+function buyUpgrade(num,list,renderFunc) {
     let upgrade = list.filter(curr =>{
         return !curr.bought;
     })[num - 1];
     if (money >= upgrade.cost) {
         upgrade.func();
-        upgrade.bought = true;
-        renderUpgradeTable(list);
+        if (renderFunc == renderUpgradeTable)
+            upgrade.bought = true;
+        renderFunc();
         changeMoney(-1 * upgrade.cost)
     }
 }
@@ -179,10 +180,10 @@ function renderInventoryTable(invName) {
     $('#' + invName +'-table').html(table);
 }
 
-function renderUpgradeTable(list) {
+function renderUpgradeTable() {
     let table = '';
     let count = 1;
-    for (let i of list) {
+    for (let i of upgrades) {
         if (!i.bought) {
             table += '<tr>';
             table += '<td>' + i.name + '</td>';
@@ -192,6 +193,21 @@ function renderUpgradeTable(list) {
         }
     }
     $('#upgrade-table').html(table);
+}
+
+function renderAutomationTable() {
+    let table = '';
+    let count = 1;
+    for (let i of automations) {
+        table += '<tr>';
+        table += '<td class="border-container automation-item"><p class="title">';
+        table += i.name + '</p>';
+        table += '<p>Level:' + i.level + '</p>';
+        table += '<p>Upgrade: $' + i.cost + ' [' + count +']</p>';
+        table += '</td></tr>';
+        count++;
+    }
+    $('#automation-table').html(table);
 }
 
 function changeMode(given) {
@@ -207,9 +223,9 @@ function changeMode(given) {
     $('#' + modeDict[mode].id).html(modeDict[mode].text + ' [' + modeDict[mode].key + ']')
     mode = given;
     if (given == 'upgrade')
-        renderUpgradeTable(upgrades);
+        renderUpgradeTable();
     else if (given == 'automation')
-        renderUpgradeTable(automations);
+        renderAutomationTable();
     else
         renderInventoryTable('player');
 }

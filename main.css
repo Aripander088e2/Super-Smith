@@ -35,6 +35,15 @@ body {
     border-radius: 0.5em;
 }
 
+.automation-item {
+    text-align: center;
+}
+
+#automation-table {
+    border-collapse:separate; 
+    border-spacing:0 2em;
+}
+
 .title {
     text-decoration: underline;
 }
