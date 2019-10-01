@@ -3,10 +3,13 @@ var coalMoveMult = 1;
 var furnaceSpeed = 1;
 
 var produceKeyFuncs = {
-    'd':mineIron,
+    'a':mineIron,
     's':mineCoal,
-    'k':ironToFurnace,
-    'l':coalToFurnace
+    'd':mineCopper,
+    'j':ironToFurnace,
+    'k':() => {coalToFurnace(1)},
+    'K':() => {coalToFurnace(2)},
+    'l':copperToFurnace
 };
 
 var sellKeyFuncs = {
@@ -30,7 +33,7 @@ var universalKeyFuncs = {
 
 var modeDict = {
     'produce':{key:'i',
-        show:['production-container','furnace-container']
+        show:['production-container','furnace1-container','furnace2-container']
     },
     'sell':{id:'sell-items',text:'Sell Items',key:'o',
         show:[]
@@ -50,14 +53,17 @@ var masterKeyFuncs = {
     automation:automationKeyFuncs
 };
 
-var inventories = {player:{},furnace:{}};
+var inventories = {player:{},furnace1:{},furnace2:{}};
 
 var iron_ore = {name:'iron_ore',val:2};
 var coal = {name:'coal',val:3};
-var iron_bar = {name:'iron_bar',val:8};
-var items = {iron_ore:iron_ore,coal:coal,iron_bar:iron_bar};
+var copper_ore = {name:'copper_ore',val:5}
+var iron_bar = {name:'iron_bar',val:12};
+var copper_bar = {name:'copper_bar',val:25};
+var items = {iron_ore:iron_ore,coal:coal,iron_bar:iron_bar,
+    copper_ore:copper_ore,copper_bar:copper_bar};
 
-var smeltCooldown = 0;
+var smeltCooldown = [0,0];
 var maxSmeltCooldown = 60;
 
 let money = 0;
@@ -78,37 +84,58 @@ function mineIron() {
     addItem(iron_ore,'player');
 }
 
+function mineCopper() {
+    addItem(copper_ore,'player')
+}
+
 function mineCoal() {
     addItem(coal,'player',1 * coalMineMult);
 }
 
 function ironToFurnace() {
     if (removeItem(iron_ore,'player'))
-        addItem(iron_ore,'furnace');
+        addItem(iron_ore,'furnace1');
 }
 
-function coalToFurnace() {
+function coalToFurnace(num) {
     let amount = 1 * coalMoveMult;
     if (removeItem(coal,'player',amount))
-        addItem(coal,'furnace',amount);
+        addItem(coal,'furnace' + num,amount);
+}
+
+function copperToFurnace() {
+    if (removeItem(copper_ore,'player'))
+        addItem(copper_ore,'furnace2');
 }
 
 setInterval(gameTick,50);
 
 function gameTick() {
     furnaceTick();
+    furnaceTick();
     autoMineTick();
 }
 
 function furnaceTick() {
-    let inv = inventories.furnace;
-    if (inv.iron_ore && inv.coal >= 2 && smeltCooldown <= 0) {
-        removeItem(iron_ore,'furnace')
-        removeItem(coal,'furnace',2)
+    // Furnace 1
+    let inv = inventories.furnace1;
+    if (inv.iron_ore && inv.coal >= 2 && smeltCooldown[0] <= 0) {
+        removeItem(iron_ore,'furnace1')
+        removeItem(coal,'furnace1',2)
         addItem(iron_bar,'player')
-        smeltCooldown = maxSmeltCooldown/furnaceSpeed;
+        smeltCooldown[0] = maxSmeltCooldown/furnaceSpeed;
     }
-    smeltCooldown--;
+    smeltCooldown[0]--;
+
+    // Furnace 2
+    inv = inventories.furnace2;
+    if (inv.copper_ore && inv.coal >= 2 && smeltCooldown[1] <= 0) {
+        removeItem(copper_ore,'furnace2')
+        removeItem(coal,'furnace2',2)
+        addItem(iron_bar,'player')
+        smeltCooldown[1] = maxSmeltCooldown/furnaceSpeed;
+    }
+    smeltCooldown[1]--;
 }
 
 function addItem(item,invName,amount = 1) {
