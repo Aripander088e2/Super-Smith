@@ -4,39 +4,42 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     </head>
     <body>
-        <div style="float:right">$<span id="money-val">0</span></div> 
-        <div style="float:right; margin-right:4em;" id="automation">Automation [u]</span></div>
-        <div style="float:right; margin-right:4em;" id="upgrade">Buy Upgrades [p]</span></div>  
-        <p>Mine Iron [d]</p>
-        <p>Mine Coal [s]</p>
-        <p>Add Iron To Furnace [k]</p>
-        <p>Add Coal To Furnace [l]</p>
-        <div id="key">
-            <div id="key-text"></div>
+        <div id='tab-container'>
+            <div class="tab" id="production"><span class="title">Production</span> [i]</div>
+            <div class="tab" id="upgrade"><span class="title">Buy Upgrades</span> [p]</div>  
+            <div class="tab" id="automation"><span class="title">Automation</span> [u]</div>
         </div>
-        <div id="key-dict"></div>         
-        <div id="inventory-container" class="border-container">
-            <p><span class="title">Inventory</span> <span id="sell-items">Sell Items [o]</span></p>
-            <table id="player-table">
-    
-            </table>
+        <hr>
+        <div id='inventory-col' class='column'>
+            <div id="inventory-container" class="border-container">
+                <p><span class="title">Inventory</span> <span id="sell-items">Sell Items [o]</span></p>
+                <div>$<span id="money-val">0</span></div> 
+                <table id="player-table">
+                </table>
+            </div>
         </div>
-        <div id="furnace-container" class="border-container">
-            <p class="title">Furnace</p>
-            <table id="furnace-table">
-    
-            </table>
-        </div>
-        <div id="upgrade-container" class="border-container" hidden>
-            <p class="title">Upgrades</p>
-            <table id="upgrade-table">
-    
-            </table>
-        </div>
-        <div id="automation-container" hidden>
-            <table id="automation-table">
-    
-            </table>
+        <div id='main-col' class='column'>
+            <div id="production-container">
+                <p>Mine Iron [d]</p>
+                <p>Mine Coal [s]</p>
+                <p>Add Iron To Furnace [k]</p>
+                <p>Add Coal To Furnace [l]</p>
+            </div>      
+            <div id="furnace-container" class="border-container">
+                <p class="title" style="text-align: center">Furnace</p>
+                <table id="furnace-table">
+        
+                </table>
+            </div>
+            <div id="upgrade-container" hidden>
+                <table id="upgrade-table">
+                </table>
+            </div>
+            <div id="automation-container" hidden>
+                <table id="automation-table">
+        
+                </table>
+            </div>
         </div>
     </body>
     <script src="./upgrades.js"></script>

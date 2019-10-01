@@ -5,23 +5,43 @@ body {
     color: white;
 }
 
-#key {
+p {
+    margin-top: 0;
+}
+
+hr {
+    margin: 2em 0em;
+}
+
+#tab-container {
     display: inline-block;
-    border: 1px solid white;
-    border-radius: 3px;
-    width: 2em;
-    height: 2em;
+}
+
+.tab {
+    float:left; 
+    margin-left:4em;
+}
+
+.column {
+    float: left;
+    height: 95%;
+}
+
+#inventory-col {
+    width: 20%;
+}
+
+#main-col {
+    width: 77%;
+    padding-left: 3%;
+}
+
+.center {
     text-align: center;
-    transition: all .075s;
 }
 
-#key-text {
-    display: inline-block;
-    padding: 0.5em 0.5em;
-}
-
-.key-small {
-    transform: scale(0.9);
+#furnace-container {
+    width: 10em;
 }
 
 #key-dict {
@@ -29,7 +49,6 @@ body {
 }
 
 .border-container {
-    width: 14em;
     border: 2px solid white;
     padding: 1em;
     border-radius: 0.5em;
@@ -39,13 +58,17 @@ body {
     text-align: center;
 }
 
-#automation-table {
+#automation-table, #upgrade-table {
     border-collapse:separate; 
-    border-spacing:0 2em;
+    border-spacing:0 1em;
 }
 
 .title {
     text-decoration: underline;
+}
+
+th {
+    font-weight: 400;
 }
 
 #sell-items { 

@@ -30,10 +30,10 @@ var universalKeyFuncs = {
 
 var modeDict = {
     'produce':{key:'i',
-        show:['inventory-container','furnace-container']
+        show:['production-container','furnace-container']
     },
     'sell':{id:'sell-items',text:'Sell Items',key:'o',
-        show:['inventory-container']
+        show:[]
     },
     'upgrade':{id:'upgrade',text:'Buy Upgrades',key:'p',
         show:['upgrade-container']
@@ -64,14 +64,8 @@ let money = 0;
 
 var mode = "produce";
 
-$(document).keydown(function(e){
-	$('#key-text').html(e.key);
-	$('#key').addClass('key-small');
-})
-
 $(document).keyup(function(e){
     let keyFuncs = masterKeyFuncs[mode];
-    $('#key').removeClass('key-small');
     if (!isNaN(e.key) && keyFuncs.num)
         keyFuncs.num(e.key);
     else if (universalKeyFuncs[e.key])
@@ -181,14 +175,14 @@ function renderInventoryTable(invName) {
 }
 
 function renderUpgradeTable() {
-    let table = '';
+    let table = ''
     let count = 1;
     for (let i of upgrades) {
         if (!i.bought) {
             table += '<tr>';
-            table += '<td>' + i.name + '</td>';
-            table += '<td>$' + i.cost + ' [' + count +']</td>';
-            table += '</tr>';
+            table += '<td class="border-container center"><p>' + i.name + '</p>';
+            table += '<p>$' + i.cost + ' [' + count +']</p>';
+            table += '</p></tr>';
             count++;
         }
     }
