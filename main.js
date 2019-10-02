@@ -78,7 +78,7 @@ var ships = {escape_pod:escape_pod};
 var smeltCooldown = [0,0];
 var maxSmeltCooldown = 60;
 
-let money = 0;
+let money = 10000;
 
 var mode = "produce";
 
