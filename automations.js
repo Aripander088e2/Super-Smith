@@ -1,21 +1,28 @@
-var autoCoalMaxCooldown = 0;
-var autoCoalCooldown = 0;
+let autoCoal = autoMiner('coal',30,60);
+let autoIron = autoMiner('iron_ore',40,70);
+let autoCopper = autoMiner('copper_ore',60,90);
 
-let autoCoal = {name:'Automatic Coal Miner',level:0,cost:30,func(){
-    autoCoalMaxCooldown = 60 / (1 + Math.pow(this.level,1.6));
-    this.cost = parseInt(this.cost + 50 * Math.pow(2, (this.level+1)/ 5));
-    this.level++;
-    renderAutomationTable();
-}};
-
-var automations = [autoCoal];
+var automations = [autoCoal,autoIron,autoCopper];
 
 function autoMineTick() {
-    if (autoCoalMaxCooldown) {
-        if (autoCoalCooldown <= 0) {
-            addItem(coal,'player',1);
-            autoCoalCooldown = autoCoalMaxCooldown;
+    for (let i of automations) {
+        if (i.maxCooldown) {
+            if (i.cooldown <= 0) {
+                addItem(i.resource,'player',1);
+                i.cooldown = i.maxCooldown;
+            }
+            i.cooldown--;
         }
-        autoCoalCooldown--;
     }
+}
+
+function autoMiner(r,c,mC) {
+    let miner = {name:'Automatic ' + prettyPrint(r) + ' Miner',level:0,cost:c,resource:items[r],cooldown:0,maxCooldown:0,func(){
+        this.maxCooldown = mC / (1 + Math.pow(this.level,1.6));
+        this.cost = parseInt(this.cost + 50 * Math.pow(2, (this.level+1)/ 5));
+        this.cooldown = 0;
+        this.level++;
+        renderAutomationTable();
+    }};
+    return miner;
 }
