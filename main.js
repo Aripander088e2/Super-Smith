@@ -70,6 +70,12 @@ var masterKeyFuncs = {
 };
 
 var inventories = {player:{},furnace1:{},furnace2:{}};
+var inventoryMaxVals = {
+    player:{iron_ore:20,coal:40,copper_ore:20,iron_bar:10,copper_bar:10,
+    copper_wire:50,iron_plate:50,iron_bulkhead:6,simple_circuit_board:15,small_engine:9},
+    furnace1:{iron_ore:5,coal:10},
+    furnace2:{copper_ore:5,coal:10}
+}
 
 var escape_pod = {name:'escape_pod',val:1000,recipe:{iron_bulkhead:2,small_engine:3,simple_circuit_board:5}};
 
@@ -107,19 +113,25 @@ function mineCoal() {
 }
 
 function ironToFurnace() {
-    if (removeItem(iron_ore,'player'))
-        addItem(iron_ore,'furnace1');
+    let max = inventoryMaxVals['furnace1'].iron_ore;
+    if (!inventories['furnace1'].iron_ore || inventories['furnace1'].iron_ore < max)
+        if (removeItem(iron_ore,'player'))
+            addItem(iron_ore,'furnace1');
 }
 
 function coalToFurnace(num) {
     let amount = 1 * coalMoveMult;
-    if (removeItem(coal,'player',amount))
-        addItem(coal,'furnace' + num,amount);
+    let max = inventoryMaxVals['furnace' + num].coal;
+    if (!inventories['furnace' + num].coal || inventories['furnace' + num].coal < max)
+        if (removeItem(coal,'player',amount))
+            addItem(coal,'furnace' + num,amount);
 }
 
 function copperToFurnace() {
-    if (removeItem(copper_ore,'player'))
-        addItem(copper_ore,'furnace2');
+    let max = inventoryMaxVals['furnace2'].copper_ore;
+    if (!inventories['furnace2'].copper_ore || inventories['furnace2'].copper_ore < max)
+        if (removeItem(copper_ore,'player'))
+            addItem(copper_ore,'furnace2');
 }
 
 function manufacture(item) {
@@ -165,10 +177,12 @@ function furnaceTick() {
 
 function addItem(item,invName,amount = 1) {
     let inventory = inventories[invName];
+    let max = inventoryMaxVals[invName][item.name];
     if (inventory[item.name] == undefined)
         inventory[item.name] = amount;
     else
         inventory[item.name] += amount;
+    inventory[item.name] = Math.min(inventory[item.name],max);
     renderInventoryTable(invName);
 }
 
@@ -239,17 +253,18 @@ function changeMoney(amount) {
 function renderInventoryTable(invName) {
     let table = '';
     let count = 1;
-    let curr;
+    let curr,max;
     for (let i in inventories[invName]) {
+        max = prettyPrint(inventoryMaxVals[invName][i]);
         table += '<tr class="' + invName + '-inventory-row">';
         table += '<td>' + prettyPrint(i) + ':</td>';
-        table += '<td>' + inventories[invName][i] + '</td>';
+        table += '<td>' + inventories[invName][i] + '/' + max + '</td>';
         if (mode == 'sell' && invName == 'player') {
             table += '<td> $' + items[i].val + '</td>';
             table += '<td> = $' + items[i].val * inventories[invName][i] + '</td>';
             table +=  '<td> [' + count + ']</td>';
         }
-        else {
+        else if (invName == 'player'){
             curr = automations.filter(auto => auto.resource == items[i] && auto.type != 'loader')[0];
             if (i == 'iron_bar')
                 curr = autoIronLoader;
