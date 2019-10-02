@@ -239,6 +239,7 @@ function changeMoney(amount) {
 function renderInventoryTable(invName) {
     let table = '';
     let count = 1;
+    let curr;
     for (let i in inventories[invName]) {
         table += '<tr class="' + invName + '-inventory-row">';
         table += '<td>' + prettyPrint(i) + ':</td>';
@@ -247,6 +248,14 @@ function renderInventoryTable(invName) {
             table += '<td> $' + items[i].val + '</td>';
             table += '<td> = $' + items[i].val * inventories[invName][i] + '</td>';
             table +=  '<td> [' + count + ']</td>';
+        }
+        else {
+            curr = automations.filter(auto => auto.resource == items[i] && auto.type != 'loader')[0];
+            if (i == 'iron_bar')
+                curr = autoIronLoader;
+            else if (i == 'copper_bar')
+                curr = autoCopperLoader;
+            table += '<td>+' + prettyPrint(20/curr.maxCooldown) + '/s</td>';
         }
         table += '</tr>';
         count++;
