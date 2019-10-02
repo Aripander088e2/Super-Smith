@@ -2,6 +2,8 @@ var coalMineMult = 1;
 var coalMoveMult = 1;
 var furnaceSpeed = 1;
 
+var flashInterval, flashing;
+
 var produceKeyFuncs = {
     'a':mineIron,
     's':mineCoal,
@@ -203,20 +205,38 @@ function buyUpgrade(num,list,renderFunc) {
 function removeItem(item,invName,amount = 1) {
     let inventory = inventories[invName];
     let currItem = (item.name == undefined ? item : item.name);
+    let index;
     if (amount == 'all')
         amount = inventory[currItem];
-    if (inventory[currItem] == undefined || inventory[currItem] < amount)
+    if (inventory[currItem] == undefined || inventory[currItem] < amount) {
+        if (invName == 'player') {
+            index = Object.keys(inventory).indexOf(currItem);
+            flash($('.player-inventory-row')[index]);
+        }
         return 0;
+    }
     inventory[currItem] -= amount;
     renderInventoryTable(invName);
     return amount;
 }
 
 function removeRecipe(recipe,givenInv) {
+    let result = true;
+    let insufficient = [];
     let inv = inventories[givenInv];
+    let index;
     for (i in recipe)
-        if (!inv[i] || recipe[i] > inv[i])
-            return false;
+        if (!inv[i] || recipe[i] > inv[i]) {
+            result = false;
+            if (givenInv == 'player') {
+                index = Object.keys(inv).indexOf(i);
+                insufficient.push($('.player-inventory-row')[index]);
+            }
+        }
+    if (!result && givenInv == 'player') {
+        flash(insufficient);
+        return false;
+    }
     for (i in recipe)
         removeItem(i,givenInv,recipe[i]);
     return true;
@@ -231,9 +251,9 @@ function renderInventoryTable(invName) {
     let table = '';
     let count = 1;
     for (let i in inventories[invName]) {
-        table += '<tr>';
+        table += '<tr class="' + invName + '-inventory-row">';
         table += '<td>' + prettyPrint(i) + ':</td>';
-        table += '<td>' + inventories[invName][i] + ' x</td>';
+        table += '<td>' + inventories[invName][i] + '</td>';
         if (mode == 'sell' && invName == 'player') {
             table += '<td> $' + items[i].val + '</td>';
             table += '<td> = $' + items[i].val * inventories[invName][i] + '</td>';
@@ -284,7 +304,6 @@ function renderShipyard() {
         table = '<li><table class="shipyard-table border-container">'
         table += '<tr><th colspan="2"><span class="title">' + prettyPrint(curr.name) + '</span> [' + count + ']</th></tr>'
         for (let j in curr.recipe) {
-            console.log(j)
             table += '<tr>';
             table += '<td>' + prettyPrint(j) + '</td>';
             table += '<td>' + prettyPrint(inventories.player[j]) + '/' + curr.recipe[j] + '</td>';
@@ -317,6 +336,28 @@ function changeMode(given) {
         renderShipyard();
     else
         renderInventoryTable('player');
+}
+
+function flash(element) {
+    if (Array.isArray(flashing))
+        for (let i of flashing)
+            $(i).removeClass('insufficient');
+    else
+        $(flashing).removeClass('insufficient');
+    clearInterval(flashInterval);
+    flashing = element;
+    let count = 0;
+    flashInterval = setInterval(() => {
+        if (Array.isArray(element))
+            for (let i of element)
+                $(i).toggleClass('insufficient');
+        else
+            $(element).toggleClass('insufficient');
+        count++;
+        if (count == 10)
+            clearInterval(flashInterval);
+    },200)
+    
 }
 
 function prettyPrint(given) {

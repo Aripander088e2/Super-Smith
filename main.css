@@ -76,6 +76,10 @@ li {
     text-decoration: underline;
 }
 
+.insufficient {
+    color: #de2929;
+}
+
 th {
     font-weight: 400;
 }
