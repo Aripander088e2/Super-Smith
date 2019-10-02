@@ -13,6 +13,10 @@ hr {
     margin: 2em 0em;
 }
 
+li {
+    list-style: none;
+}
+
 #tab-container {
     display: inline-block;
 }
@@ -61,6 +65,11 @@ hr {
 #automation-table, #upgrade-table {
     border-collapse:separate; 
     border-spacing:0 1em;
+}
+
+.shipyard-table {
+    border-collapse: separate;
+    border-spacing: 2em 1em;
 }
 
 .title {

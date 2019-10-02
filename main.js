@@ -29,11 +29,16 @@ var automationKeyFuncs = {
     'num':num => {buyUpgrade(num,automations,renderAutomationTable)}
 }
 
+var shipyardKeyFuncs = {
+    'num':num => {manufacture(ships[Object.keys(ships)[num-1]])}
+}
+
 var universalKeyFuncs = {
     'i':() => {return changeMode('produce')},
     'o':() => {return changeMode('sell')},
     'p':() => {return changeMode('upgrade')},
     'u':() => {return changeMode('automation')},
+    'y':() => {return changeMode('shipyard')},
 }
 
 var modeDict = {
@@ -48,6 +53,9 @@ var modeDict = {
     },
     'automation':{id:'automation',text:'Automation',key:'u',
         show:['automation-container']
+    },
+    'shipyard':{id:'shipyard',text:'Shipyard',key:'u',
+        show:['shipyard-container']
     }
 }
 
@@ -55,7 +63,8 @@ var masterKeyFuncs = {
     produce:produceKeyFuncs,
     sell:sellKeyFuncs,
     upgrade:upgradeKeyFuncs,
-    automation:automationKeyFuncs
+    automation:automationKeyFuncs,
+    shipyard:shipyardKeyFuncs
 };
 
 var inventories = {player:{},furnace1:{},furnace2:{}};
@@ -74,6 +83,11 @@ var small_engine = {name:'small_engine',val:325,recipe:{copper_wire:10,copper_ba
 var items = {iron_ore:iron_ore,coal:coal,iron_bar:iron_bar,iron_plate:iron_plate,iron_bulkhead:iron_bulkhead,
     copper_ore:copper_ore,copper_bar:copper_bar,copper_wire:copper_wire,
     simple_circuit_board:simple_circuit_board,small_engine:small_engine};
+
+
+var escape_pod = {name:'escape_pod',val:1000,recipe:{iron_bulkhead:2,small_engine:3,simple_circuit_board:5}};
+
+var ships = {escape_pod:escape_pod};
 
 var smeltCooldown = [0,0];
 var maxSmeltCooldown = 60;
@@ -124,6 +138,8 @@ function manufacture(item) {
     let amount = (item.output != undefined ? item.output : 1);
     if (removeRecipe(item.recipe,'player'))
         addItem(item,'player',amount);
+    if (mode == 'shipyard')
+        renderShipyard();
 }
 
 setInterval(gameTick,50);
@@ -259,6 +275,28 @@ function renderAutomationTable() {
     $('#automation-table').html(table);
 }
 
+function renderShipyard() {
+    let list = '';
+    let table, curr;
+    let count = 1;
+    for (let i in ships) {
+        curr = ships[i];
+        table = '<li><table class="shipyard-table border-container">'
+        table += '<tr><th colspan="2"><span class="title">' + prettyPrint(curr.name) + '</span> [' + count + ']</th></tr>'
+        for (let j in curr.recipe) {
+            console.log(j)
+            table += '<tr>';
+            table += '<td>' + prettyPrint(j) + '</td>';
+            table += '<td>' + prettyPrint(inventories.player[j]) + '/' + curr.recipe[j] + '</td>';
+            table += '</tr>';
+        }
+        table += '</table></li>'
+        list += table;
+        count++;
+    }
+    $('#shipyard-list').html(list);
+}
+
 function changeMode(given) {
     // If user hits the button they just hit go back
     if (given == mode)
@@ -275,13 +313,15 @@ function changeMode(given) {
         renderUpgradeTable();
     else if (given == 'automation')
         renderAutomationTable();
+    else if (given == 'shipyard')
+        renderShipyard();
     else
         renderInventoryTable('player');
 }
 
 function prettyPrint(given) {
     if (given == undefined)
-        return;
+        return 0;
     if (isNaN(given)) {
         let arr = given.split('_')
         for (let i = 0; i < arr.length; i++)
