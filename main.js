@@ -84,7 +84,9 @@ var mode = "produce";
 
 $(document).keyup(function(e){
     let keyFuncs = masterKeyFuncs[mode];
-    if (!isNaN(e.key) && keyFuncs.num)
+    if (symbols.indexOf(e.key) != -1)
+        keyFuncs.num(symbols.indexOf(e.key) + 10)
+    else if (!isNaN(e.key) && keyFuncs.num)
         keyFuncs.num(e.key);
     else if (universalKeyFuncs[e.key])
         universalKeyFuncs[e.key]();
@@ -121,6 +123,7 @@ function copperToFurnace() {
 }
 
 function manufacture(item) {
+    console.log(item)
     let amount = (item.output != undefined ? item.output : 1);
     if (removeRecipe(item.recipe,'player'))
         addItem(item,'player',amount);
@@ -268,12 +271,14 @@ function renderAutomationTable() {
     let table = '';
     let count = 1;
     for (let i of automations) {
-        table += '<tr>';
+        if (count % 2 == 1)
+            table += '<tr>';
         table += '<td class="border-container automation-item"><p class="title">';
         table += i.name + '</p>';
         table += '<p>Level:' + i.level + '</p>';
-        table += '<p>Upgrade: $' + i.cost + ' [' + count +']</p>';
-        table += '</td></tr>';
+        table += '<p>Upgrade: $' + i.cost + ' [' + (count <= 9 ? count : symbols[count-10]) +']</p></td>';
+        if (count % 2 == 0)
+            table += '</tr>';
         count++;
     }
     $('#automation-table').html(table);

@@ -1,3 +1,5 @@
+const symbols = ['0','!','@','#','$','%','^','&','*','(',')'];
+
 function prettyPrint(given) {
     if (given == undefined)
         return 0;

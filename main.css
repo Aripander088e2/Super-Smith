@@ -62,12 +62,12 @@ li {
     text-align: center;
 }
 
-#automation-table, #upgrade-table {
+#upgrade-table {
     border-collapse:separate; 
     border-spacing:0 1em;
 }
 
-.shipyard-table {
+#automation-table, .shipyard-table {
     border-collapse: separate;
     border-spacing: 2em 1em;
 }
