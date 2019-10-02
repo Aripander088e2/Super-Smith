@@ -149,6 +149,7 @@ function furnaceTick() {
         smeltCooldown[0] = maxSmeltCooldown/furnaceSpeed;
     }
     smeltCooldown[0]--;
+    $("#furnace1-inner").width(smeltCooldown[0]/maxSmeltCooldown * 100 + '%');
 
     // Furnace 2
     inv = inventories.furnace2;
@@ -159,6 +160,7 @@ function furnaceTick() {
         smeltCooldown[1] = maxSmeltCooldown/furnaceSpeed;
     }
     smeltCooldown[1]--;
+    $("#furnace2-inner").width(smeltCooldown[1]/maxSmeltCooldown * 100 + '%');
 }
 
 function addItem(item,invName,amount = 1) {
