@@ -9,7 +9,9 @@ var produceKeyFuncs = {
     'j':ironToFurnace,
     'k':() => {coalToFurnace(1)},
     'K':() => {coalToFurnace(2)},
-    'l':copperToFurnace
+    'l':copperToFurnace,
+    'z':() => {manufacture(copper_wire)},
+    'b':() => {manufacture(simple_circuitboard)}
 };
 
 var sellKeyFuncs = {
@@ -60,8 +62,12 @@ var coal = {name:'coal',val:3};
 var copper_ore = {name:'copper_ore',val:5}
 var iron_bar = {name:'iron_bar',val:12};
 var copper_bar = {name:'copper_bar',val:25};
+var copper_wire = {name:'copper_wire',val:7,recipe:{copper_bar:1},output:5};
+var simple_circuitboard = {name:'simple_circuit_board',val:225,recipe:{copper_wire:15,iron_bar:2}};
+
 var items = {iron_ore:iron_ore,coal:coal,iron_bar:iron_bar,
-    copper_ore:copper_ore,copper_bar:copper_bar};
+    copper_ore:copper_ore,copper_bar:copper_bar,copper_wire:copper_wire,
+    simple_circuitboard:simple_circuitboard};
 
 var smeltCooldown = [0,0];
 var maxSmeltCooldown = 60;
@@ -108,6 +114,11 @@ function copperToFurnace() {
         addItem(copper_ore,'furnace2');
 }
 
+function manufacture(item) {
+    if (removeRecipe(item.recipe,'player'))
+        addItem(item,'player',item.output);
+}
+
 setInterval(gameTick,50);
 
 function gameTick() {
@@ -132,7 +143,7 @@ function furnaceTick() {
     if (inv.copper_ore && inv.coal >= 2 && smeltCooldown[1] <= 0) {
         removeItem(copper_ore,'furnace2')
         removeItem(coal,'furnace2',2)
-        addItem(iron_bar,'player')
+        addItem(copper_bar,'player')
         smeltCooldown[1] = maxSmeltCooldown/furnaceSpeed;
     }
     smeltCooldown[1]--;
@@ -178,6 +189,16 @@ function removeItem(item,invName,amount = 1) {
     return amount;
 }
 
+function removeRecipe(recipe,givenInv) {
+    let inv = inventories[givenInv];
+    for (i in recipe)
+        if (!inv[i] || recipe[i] > inv[i])
+            return false;
+    for (i in recipe)
+        removeItem(i,givenInv,recipe[i]);
+    return true;
+}
+
 function changeMoney(amount) {
     money += amount;
     $('#money-val').html(money);
@@ -192,8 +213,8 @@ function renderInventoryTable(invName) {
         table += '<td>' + inventories[invName][i] + ' x</td>';
         if (mode == 'sell' && invName == 'player') {
             table += '<td> $' + items[i].val + '</td>';
-            table += '<td> = $' + items[i].val * inventories[invName][i] + 
-            ' [' + count + ']</td>';
+            table += '<td> = $' + items[i].val * inventories[invName][i] + '</td>';
+            table +=  '<td> [' + count + ']</td>';
         }
         table += '</tr>';
         count++;
