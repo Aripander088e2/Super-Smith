@@ -12,3 +12,7 @@ var small_engine = {name:'small_engine',val:325,recipe:{copper_wire:10,copper_ba
 var items = {iron_ore:iron_ore,coal:coal,iron_bar:iron_bar,iron_plate:iron_plate,iron_bulkhead:iron_bulkhead,
     copper_ore:copper_ore,copper_bar:copper_bar,copper_wire:copper_wire,
     simple_circuit_board:simple_circuit_board,small_engine:small_engine};
+
+var resources = ['iron_ore','coal','copper_ore'];
+var manufactured = ['copper_wire','iron_plate'];
+var assembled = ['iron_bulkhead','simple_circuit_board','small_engine'];

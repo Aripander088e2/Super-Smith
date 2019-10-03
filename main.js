@@ -1,7 +1,14 @@
 var coalMineMult = 1;
 var ironMineMult = 1;
 var copperMineMult = 1;
+var autoMineMult = 1;
 var moveMult = 1;
+
+var manufacturingMult = 1;
+var autoManufacturingMult = 1;
+var assemblyMult = 1;
+var autoAssemblyMult = 1;
+
 var furnaceSpeed = 1;
 
 var flashInterval, flashing;
@@ -138,10 +145,15 @@ function copperToFurnace() {
             addItem(copper_ore,'furnace2',amount);
 }
 
-function manufacture(item) {
-    console.log(item)
+function manufacture(item,auto = false) {
     let amount = (item.output != undefined ? item.output : 1);
-    if (removeRecipe(item.recipe,'player'))
+    let mult = 1;
+    if (manufactured.indexOf(item.name) != -1)
+        mult = (auto ? autoManufacturingMult : manufacturingMult)
+    else if (assembled.indexOf(item.name) != -1)
+        mult = (auto ? autoAssemblyMult : assemblyMult)
+    amount *= mult;
+    if (removeRecipe(item.recipe,'player',mult))
         addItem(item,'player',amount);
     if (mode == 'shipyard')
         renderShipyard();
@@ -227,13 +239,13 @@ function removeItem(item,invName,amount = 1) {
     return amount;
 }
 
-function removeRecipe(recipe,givenInv) {
+function removeRecipe(recipe,givenInv,mult) {
     let result = true;
     let insufficient = [];
     let inv = inventories[givenInv];
     let index;
     for (i in recipe)
-        if (!inv[i] || recipe[i] > inv[i]) {
+        if (!inv[i] || recipe[i] * mult > inv[i]) {
             result = false;
             if (givenInv == 'player') {
                 index = Object.keys(inv).indexOf(i);
@@ -245,7 +257,7 @@ function removeRecipe(recipe,givenInv) {
         return false;
     }
     for (i in recipe)
-        removeItem(i,givenInv,recipe[i]);
+        removeItem(i,givenInv,recipe[i]*mult);
     return true;
 }
 
@@ -271,11 +283,18 @@ function renderInventoryTable(invName) {
         else if (invName == 'player'){
             curr = automations.filter(auto => auto.resource == items[i] && auto.type != 'loader')[0];
             if (curr && curr.maxCooldown) {
+                let mult = 1;
+                if (resources.indexOf(curr.resource.name) != -1)
+                    mult = autoMineMult;
+                else if (manufactured.indexOf(curr.resource.name) != -1)
+                    mult = autoManufacturingMult;
+                else if (assembled.indexOf(curr.resource.name) != -1)
+                    mult = autoAssemblyMult;
                 if (i == 'iron_bar')
                     curr = autoIronLoader;
                 else if (i == 'copper_bar')
                     curr = autoCopperLoader;
-                table += '<td>+' + prettyPrint(curr.amount * (20/curr.maxCooldown)) + '/s</td>';
+                table += '<td>+' + prettyPrint(curr.amount * mult * (20/curr.maxCooldown)) + '/s</td>';
             }
         }
         table += '</tr>';

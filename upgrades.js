@@ -1,5 +1,31 @@
 var upgrades = [];
 
+upgrades.push({name:'Improved Auto Miners',cost:200,bought:false,func(){
+    autoMineMult++;
+    renderInventoryTable('player');
+}});
+
+upgrades.push({name:'Improved Auto Miners',cost:1000,bought:false,func(){
+    autoMineMult++;
+    renderInventoryTable('player');
+}});
+
+upgrades.push({name:'Improved Manufacturing',cost:200,bought:false,func(){
+    manufacturingMult += 1;
+}});
+
+upgrades.push({name:'Improved Auto Manufacturing',cost:200,bought:false,func(){
+    autoManufacturingMult += 1;
+}});
+
+upgrades.push({name:'Improved Assembly',cost:200,bought:false,func(){
+    assemblyMult += 1;
+}});
+
+upgrades.push({name:'Improved Auto Assembly',cost:200,bought:false,func(){
+    autoAssemblyMult += 1;
+}});
+
 upgrades.push({name:'Improved Furnace Loading',cost:200,bought:false,func(){
     moveMult += 1;
 }});
@@ -13,14 +39,12 @@ upgrades.push({name:'Furnace Speed 2',cost:100,bought:false,func(){
 }});
 
 upgrades.push({name:'Improved Resource Capacity',cost:60,bought:false,func(){
-    let resources = ['iron_ore','coal','copper_ore']
     for (let i of resources)
         inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
     renderInventoryTable('player');
 }});
 
 upgrades.push({name:'Improved Resource Capacity 2',cost:600,bought:false,func(){
-    let resources = ['iron_ore','coal','copper_ore']
     for (let i of resources)
         inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
     renderInventoryTable('player');
@@ -78,16 +102,4 @@ upgrades.push({name:'Improved Iron Mining',cost:50,bought:false,func(){
 
 upgrades.push({name:'Improved Copper Mining',cost:50,bought:false,func(){
     copperMineMult += 1;
-}});
-
-upgrades.push({name:'Improved Auto Miners',cost:200,bought:false,func(){
-    for (let i of automations.filter(auto => auto.type == 'miner'))
-        i.amount++;
-    renderInventoryTable('player');
-}});
-
-upgrades.push({name:'Improved Auto Miners',cost:1000,bought:false,func(){
-    for (let i of automations.filter(auto => auto.type == 'miner'))
-        i.amount++;
-    renderInventoryTable('player');
 }});

@@ -6,12 +6,12 @@ let autoCoalLoader = autoDoer('coal','Loader',()=>{coalToFurnace(1); coalToFurna
 let autoIronLoader = autoDoer('iron_ore','Loader',()=>{ironToFurnace()},65,140);
 let autoCopperLoader = autoDoer('copper_ore','Loader',()=>{copperToFurnace()},85,180);
 
-let autoIronPlateMaker = autoDoer('iron_plate','Maker',function(){manufacture(this.resource)},45,120);
-let autoCopperWireMaker = autoDoer('copper_wire','Maker',function(){manufacture(this.resource)},45,120);
+let autoIronPlateMaker = autoDoer('iron_plate','Maker',function(){manufacture(this.resource,true)},45,120);
+let autoCopperWireMaker = autoDoer('copper_wire','Maker',function(){manufacture(this.resource,true)},45,120);
 
-let autoIronBulkheadAssembler = autoDoer('iron_bulkhead','Assembler',function(){manufacture(this.resource)},45,120);
-let autoSimpleCircuitBoardAssembler = autoDoer('simple_circuit_board','Assembler',function(){manufacture(this.resource)},45,120);
-let autoSmallEngineAssembler = autoDoer('small_engine','Assembler',function(){manufacture(this.resource)},45,120);
+let autoIronBulkheadAssembler = autoDoer('iron_bulkhead','Assembler',function(){manufacture(this.resource,true)},45,120);
+let autoSimpleCircuitBoardAssembler = autoDoer('simple_circuit_board','Assembler',function(){manufacture(this.resource,true)},45,120);
+let autoSmallEngineAssembler = autoDoer('small_engine','Assembler',function(){manufacture(this.resource,true)},45,120);
 
 var automations = [autoCoalMiner,autoIronMiner,autoCopperMiner,autoCoalLoader,autoIronLoader,autoCopperLoader,
     autoIronPlateMaker,autoCopperWireMaker,autoIronBulkheadAssembler,autoSimpleCircuitBoardAssembler,autoSmallEngineAssembler];
@@ -21,7 +21,7 @@ function autoMineTick() {
         if (i.maxCooldown) {
             if (i.cooldown <= 0) {
                 if (i.type == 'miner')
-                    addItem(i.resource,'player',i.amount);
+                    addItem(i.resource,'player',i.amount * autoMineMult);
                 else
                     i.autoFunc();
                 i.cooldown = i.maxCooldown;
