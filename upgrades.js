@@ -1,37 +1,37 @@
 var upgrades = [];
 
 upgrades.push({name:'Improved Auto Miners',cost:200,bought:false,func(){
-    autoMineMult++;
+    mults.autoMineMult++;
     renderInventoryTable('player');
 }});
 
 upgrades.push({name:'Improved Auto Miners',cost:1000,bought:false,func(){
-    autoMineMult++;
+    mults.autoMineMult++;
     renderInventoryTable('player');
 }});
 
 upgrades.push({name:'Improved Manufacturing',cost:200,bought:false,func(){
-    manufacturingMult += 1;
+    mults.manufacturingMult += 1;
 }});
 
 upgrades.push({name:'Improved Auto Manufacturing',cost:200,bought:false,func(){
-    autoManufacturingMult += 1;
+    mults.autoManufacturingMult += 1;
 }});
 
 upgrades.push({name:'Improved Assembly',cost:200,bought:false,func(){
-    assemblyMult += 1;
+    mults.assemblyMult += 1;
 }});
 
 upgrades.push({name:'Improved Auto Assembly',cost:200,bought:false,func(){
-    autoAssemblyMult += 1;
+    mults.autoAssemblyMult += 1;
 }});
 
 upgrades.push({name:'Improved Furnace Loading',cost:200,bought:false,func(){
-    moveMult += 1;
+    mults.moveMult += 1;
 }});
 
 upgrades.push({name:'Furnace Speed',cost:20,bought:false,func(){
-    furnaceSpeed += 1;
+    mults.furnaceSpeed += 1;
 }});
 
 upgrades.push({name:'Furnace Speed 2',cost:100,bought:false,func(){
@@ -93,13 +93,13 @@ upgrades.push({name:'Improved Assembly Capacity 2',cost:60,bought:false,func(){
 }});
 
 upgrades.push({name:'Improved Coal Mining',cost:50,bought:false,func(){
-    coalMineMult += 2;
+    mults.coalMineMult += 2;
 }});
 
 upgrades.push({name:'Improved Iron Mining',cost:50,bought:false,func(){
-    ironMineMult += 1;
+    mults.ironMineMult += 1;
 }});
 
 upgrades.push({name:'Improved Copper Mining',cost:50,bought:false,func(){
-    copperMineMult += 1;
+    mults.copperMineMult += 1;
 }});

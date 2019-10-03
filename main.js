@@ -1,13 +1,14 @@
-var coalMineMult = 1;
-var ironMineMult = 1;
-var copperMineMult = 1;
-var autoMineMult = 1;
-var moveMult = 1;
+var mults = {};
+mults.coalMineMult = 1;
+mults.ironMineMult = 1;
+mults.copperMineMult = 1;
+mults.autoMineMult = 1;
+mults.moveMult = 1;
 
-var manufacturingMult = 1;
-var autoManufacturingMult = 1;
-var assemblyMult = 1;
-var autoAssemblyMult = 1;
+mults.manufacturingMult = 1;
+mults.autoManufacturingMult = 1;
+mults.assemblyMult = 1;
+mults.autoAssemblyMult = 1;
 
 var furnaceSpeed = 1;
 
@@ -110,19 +111,19 @@ $(document).keyup(function(e){
 });
 
 function mineIron() {
-    addItem(iron_ore,'player',1 * ironMineMult);
+    addItem(iron_ore,'player',1 * mults.ironMineMult);
 }
 
 function mineCopper() {
-    addItem(copper_ore,'player',1 * copperMineMult)
+    addItem(copper_ore,'player',1 * mults.copperMineMult)
 }
 
 function mineCoal() {
-    addItem(coal,'player',1 * coalMineMult);
+    addItem(coal,'player',1 * mults.coalMineMult);
 }
 
 function ironToFurnace() {
-    let amount = 1 * moveMult;
+    let amount = 1 * mults.moveMult;
     let max = inventoryMaxVals['furnace1'].iron_ore;
     if (!inventories['furnace1'].iron_ore || inventories['furnace1'].iron_ore < max)
         if (removeItem(iron_ore,'player',amount))
@@ -130,7 +131,7 @@ function ironToFurnace() {
 }
 
 function coalToFurnace(num) {
-    let amount = 1 * moveMult;
+    let amount = 1 * mults.moveMult;
     let max = inventoryMaxVals['furnace' + num].coal;
     if (!inventories['furnace' + num].coal || inventories['furnace' + num].coal < max)
         if (removeItem(coal,'player',amount))
@@ -138,7 +139,7 @@ function coalToFurnace(num) {
 }
 
 function copperToFurnace() {
-    let amount = 1 * moveMult;
+    let amount = 1 * mults.moveMult;
     let max = inventoryMaxVals['furnace2'].copper_ore;
     if (!inventories['furnace2'].copper_ore || inventories['furnace2'].copper_ore < max)
         if (removeItem(copper_ore,'player',amount))
@@ -152,7 +153,7 @@ function manufacture(item,auto = false) {
         mult = (auto ? autoManufacturingMult : manufacturingMult)
     else if (assembled.indexOf(item.name) != -1)
         mult = (auto ? autoAssemblyMult : assemblyMult)
-    amount *= mult;
+    amount *= mults[mult];
     if (removeRecipe(item.recipe,'player',mult))
         addItem(item,'player',amount);
     if (mode == 'shipyard')
@@ -294,7 +295,7 @@ function renderInventoryTable(invName) {
                     curr = autoIronLoader;
                 else if (i == 'copper_bar')
                     curr = autoCopperLoader;
-                table += '<td>+' + prettyPrint(curr.amount * mult * (20/curr.maxCooldown)) + '/s</td>';
+                table += '<td>+' + prettyPrint(curr.amount * mults[mult] * (20/curr.maxCooldown)) + '/s</td>';
             }
         }
         table += '</tr>';
@@ -399,6 +400,33 @@ function flash(element) {
         count++;
         if (count == 10)
             clearInterval(flashInterval);
-    },200)
-    
+    },200)   
+}
+
+function save() {
+    let save = {};
+    save.mode = mode;
+    save.money = money;
+    save.inventories = inventories;
+    save.inventoryMaxVals = inventoryMaxVals;
+    save.upgrades = upgrades;
+    save.automations = automations;
+    save.mults = mults;
+    save.furnaceSpeed = furnaceSpeed;
+    console.log(upgrades,save.upgrades)
+    window.sessionStorage.superSmith = JSON.stringify(save);
+}
+
+function load() {
+    let save = JSON.parse(window.sessionStorage.superSmith);
+    money = save.money;
+    inventories = save.inventories;
+    inventoryMaxVals = save.inventoryMaxVals;
+    upgrades = save.upgrades;
+    automations = save.automations;
+    mults = save.mults;
+    furnaceSpeed = save.furnaceSpeed;
+    console.log(upgrades,save.upgrades)
+    changeMode(save.mode);
+    changeMoney(0);
 }
