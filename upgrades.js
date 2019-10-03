@@ -1,5 +1,18 @@
 var upgrades = [];
+let coalMining = {name:'Coal Mining',cost:40,bought:false,func(){
+    produceKeyFuncs.s = mineCoal;
+    $('#coal-text').show();
+    upgrades.push(ironForging);
+}};
 
+let ironForging = {name:'Iron Forging',cost:65,bought:false,func(){
+    modeDict.produce.show.push('furnace1-container');
+    produceKeyFuncs.j = ironToFurnace;
+    produceKeyFuncs.k = () => {coalToFurnace(1)};
+    $('#load-iron_ore-text').show();
+    $('#load-coal-text').show();
+}}
+/*
 upgrades.push({name:'Improved Auto Miners',cost:200,bought:false,func(){
     mults.autoMineMult++;
     renderInventoryTable('player');
@@ -103,3 +116,4 @@ upgrades.push({name:'Improved Iron Mining',cost:50,bought:false,func(){
 upgrades.push({name:'Improved Copper Mining',cost:50,bought:false,func(){
     mults.copperMineMult += 1;
 }});
+*/

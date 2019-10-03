@@ -17,12 +17,24 @@ var furnaceSpeed = 1;
 
 var flashInterval, flashing;
 
+var progressStage = 0;
+
+var unlocks = [
+    ()=>{ $('#iron_ore-press').fadeOut();},
+    ()=>{
+        $('#sell-items').fadeIn(500);
+        universalKeyFuncs.o = () => {return changeMode('sell')};
+    },
+    ()=>{
+        upgrades.push(coalMining);
+        $('#upgrade').fadeIn(500);
+        universalKeyFuncs.p = () => {return changeMode('upgrade')};
+    }
+]
+
 var produceKeyFuncs = {
     'a':mineIron,
-    's':mineCoal,
     'd':mineCopper,
-    'j':ironToFurnace,
-    'k':() => {coalToFurnace(1)},
     'K':() => {coalToFurnace(2)},
     'l':copperToFurnace,
     'z':() => {manufacture(iron_plate)},
@@ -51,15 +63,13 @@ var shipyardKeyFuncs = {
 
 var universalKeyFuncs = {
     'i':() => {return changeMode('produce')},
-    'o':() => {return changeMode('sell')},
-    'p':() => {return changeMode('upgrade')},
     'u':() => {return changeMode('automation')},
     'y':() => {return changeMode('shipyard')},
 }
 
 var modeDict = {
     'produce':{key:'i',
-        show:['production-container','furnace1-container','furnace2-container']
+        show:['production-container']
     },
     'sell':{id:'sell-items',text:'Sell Items',key:'o',
         show:[]
@@ -98,7 +108,7 @@ var ships = {escape_pod:escape_pod};
 var smeltCooldown = [0,0];
 var maxSmeltCooldown = 60;
 
-let money = 10000;
+let money = 0;
 
 $(document).keyup(function(e){
     let keyFuncs = masterKeyFuncs[mode];
@@ -112,8 +122,17 @@ $(document).keyup(function(e){
         keyFuncs[e.key]();
 });
 
+function newUnlock() {
+    unlocks.shift()();
+    progressStage++;
+}
+
 function mineIron() {
     addItem(iron_ore,'player',1 * mults.ironMineMult);
+    if (progressStage == 0 && inventories['player'].iron_ore == 2)
+        newUnlock();
+    else if (progressStage == 1 && inventories['player'].iron_ore == 7)
+        newUnlock();
 }
 
 function mineCopper() {
@@ -291,6 +310,8 @@ function removeRecipe(item,givenInv,mult) {
 function changeMoney(amount) {
     money += amount;
     $('#money-val').html(money);
+    if (progressStage == 2 && money >= 25)
+        newUnlock();
 }
 
 function renderInventoryTable(invName) {

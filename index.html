@@ -8,14 +8,14 @@
     <body>
         <div id='tab-container'>
             <div class="tab" id="production"><span class="title">Production</span> [i]</div>
-            <div class="tab" id="upgrade"><span class="title">Buy Upgrades</span> [p]</div>  
-            <div class="tab" id="automation"><span class="title">Automation</span> [u]</div>
-            <div class="tab" id="automation"><span class="title">Shipyard</span> [y]</div>
+            <div class="tab" id="upgrade" hidden><span class="title">Buy Upgrades</span> [p]</div>  
+            <div class="tab" id="automation" hidden><span class="title">Automation</span> [u]</div>
+            <div class="tab" id="shipyard" hidden><span class="title">Shipyard</span> [y]</div>
         </div>
         <hr>
         <div id='inventory-col' class='column'>
             <div id="inventory-container" class="border-container">
-                <p><span class="title">Inventory</span> <span id="sell-items">Sell Items [o]</span></p>
+                <p><span class="title">Inventory</span> <span id="sell-items" hidden>Sell Items [o]</span></p>
                 <div>$<span id="money-val">0</span></div> 
                 <table id="player-table">
                 </table>
@@ -23,25 +23,25 @@
         </div>
         <div id='main-col' class='column'>
             <div id="production-container">
-                <p>Mine Iron [a]</p>
-                <p>Mine Coal [s]</p>
-                <p>Mine Copper [d]</p>
-                <p>Load Iron Into Furnace 1 [j]</p>
-                <p>Load Coal Into Furnace 1 [k]</p>
-                <p>Load Copper Into Furnace 2 [l]</p>
-                <p>Load Coal Into Furnace 2 [K]</p>
-                <p>Make Iron Plate [z]</p>
-                <p>Make Copper Wire [x]</p>
-                <p>Assemble Iron Bulkhead [b]</p>
-                <p>Assemble Simple Circuit Board [n]</p>
-                <p>Assemble Small Engine [m]</p>
+                <p id="iron_ore-text">Mine Iron [<span id="iron_ore-press">press </span>a]</p>
+                <p id="coal-text" hidden>Mine Coal [s]</p>
+                <p id="copper-text" hidden>Mine Copper [d]</p>
+                <p id="load-iron_ore-text" hidden>Load Iron Into Furnace 1 [j]</p>
+                <p id="load-coal-text" hidden>Load Coal Into Furnace 1 [k]</p>
+                <p id="load-copper_ore-text" hidden>Load Copper Into Furnace 2 [l]</p>
+                <p id="load_coal2-text" hidden>Load Coal Into Furnace 2 [K]</p>
+                <p id="iron_plate-text" hidden>Make Iron Plate [z]</p>
+                <p id="copper_wire-text" hidden>Make Copper Wire [x]</p>
+                <p id="iron_bulkhead-text" hidden>Assemble Iron Bulkhead [b]</p>
+                <p id="simple_circuit_board-text" hidden>Assemble Simple Circuit Board [n]</p>
+                <p id="small_engine-text" hidden>Assemble Small Engine [m]</p>
             </div>      
-            <div id="furnace1-container" class="border-container furnace-container">
+            <div id="furnace1-container" class="border-container furnace-container" hidden>
                 <div id="furnace1-inner" class="furnace-inner"></div>
                 <p class="title" style="text-align: center">Furnace 1</p>
                 <table id="furnace1-table"></table>
             </div>
-            <div id="furnace2-container" class="border-container furnace-container">
+            <div id="furnace2-container" class="border-container furnace-container" hidden>
                 <div id="furnace2-inner" class="furnace-inner"></div>
                 <p class="title" style="text-align: center">Furnace 2</p>
                 <table id="furnace2-table"></table>

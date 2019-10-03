@@ -13,8 +13,8 @@ let autoIronBulkheadAssembler = autoDoer('iron_bulkhead','Assembler',function(){
 let autoSimpleCircuitBoardAssembler = autoDoer('simple_circuit_board','Assembler',function(){manufacture(this.resource,true)},45,120);
 let autoSmallEngineAssembler = autoDoer('small_engine','Assembler',function(){manufacture(this.resource,true)},45,120);
 
-var automations = [autoCoalMiner,autoIronMiner,autoCopperMiner,autoCoalLoader,autoIronLoader,autoCopperLoader,
-    autoIronPlateMaker,autoCopperWireMaker,autoIronBulkheadAssembler,autoSimpleCircuitBoardAssembler,autoSmallEngineAssembler];
+var automations = [autoCoalMiner]/*,autoIronMiner,autoCopperMiner,autoCoalLoader,autoIronLoader,autoCopperLoader,
+    autoIronPlateMaker,autoCopperWireMaker,autoIronBulkheadAssembler,autoSimpleCircuitBoardAssembler,autoSmallEngineAssembler];*/
 
 function autoMineTick() {
     for (let i of automations) {
