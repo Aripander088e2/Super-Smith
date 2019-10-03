@@ -7,13 +7,12 @@ mults.ironMineMult = 1;
 mults.copperMineMult = 1;
 mults.autoMineMult = 1;
 mults.moveMult = 1;
+mults.furnaceSpeed = 1;
 
 mults.manufacturingMult = 1;
 mults.autoManufacturingMult = 1;
 mults.assemblyMult = 1;
 mults.autoAssemblyMult = 1;
-
-var furnaceSpeed = 1;
 
 var flashInterval, flashing;
 
@@ -32,17 +31,29 @@ var unlocks = [
     },
     ()=>{
         upgrades.push(improvedFurnaceSpeed);
-        upgrades.push(improvedFurnaceCapacity);
+        upgrades.push(automatedCoalMining);
+        $('#new-upgrade').show();
+    },
+    ()=>{
+        upgrades.push(improvedResourceCapacity);
+        $('#new-upgrade').show();
+    },
+    ()=>{
+        upgrades.push(ironPlateManufacturing);
+        $('#new-upgrade').show();
+    }
+    ()=>{
+        upgrades.push(copperForging);
+        $('#new-upgrade').show();
+    },
+    ()=>{
+        upgrades.push(copperWireManufacturing);
         $('#new-upgrade').show();
     }
 ]
 
 var produceKeyFuncs = {
     'a':mineIron,
-    'K':() => {coalToFurnace(2)},
-    'l':copperToFurnace,
-    'z':() => {manufacture(iron_plate)},
-    'x':() => {manufacture(copper_wire)},
     'b':() => {manufacture(iron_bulkhead)},
     'n':() => {manufacture(simple_circuit_board)},
     'm':() => {manufacture(small_engine)},
@@ -140,10 +151,18 @@ function mineIron() {
 
 function mineCopper() {
     addItem(copper_ore,'player',1 * mults.copperMineMult)
+    if (progressStage >= 6 && progressStage < 7)
+        progressStage += 0.1;
+    if (progressStage >= 6.8 && progressStage < 7) {
+        progressStage = 6;
+        newUnlock();
+    }
 }
 
 function mineCoal() {
     addItem(coal,'player',1 * mults.coalMineMult);
+    if (progressStage == 4 && inventories.player.coal > 20)
+        newUnlock();
 }
 
 function ironToFurnace() {
@@ -236,16 +255,22 @@ function furnaceTick() {
         removeItem(iron_ore,'furnace1')
         removeItem(coal,'furnace1',2)
         addItem(iron_bar,'player')
-        smeltCooldown[0] = maxSmeltCooldown/furnaceSpeed;
+        smeltCooldown[0] = maxSmeltCooldown/mults.furnaceSpeed;
         if (progressStage >= 3 && progressStage < 4)
             progressStage += 0.1;
         if (progressStage >= 3.4 && progressStage < 4) {
             progressStage = 3;
             newUnlock();
         }
+        if (progressStage >= 5 && progressStage < 6)
+            progressStage += 0.1;
+        if (progressStage >= 5.9 && progressStage < 6) {
+            progressStage = 5;
+            newUnlock();
+        }
     }
     smeltCooldown[0]--;
-    $("#furnace1-inner").width(smeltCooldown[0]/maxSmeltCooldown * 100 + '%');
+    $("#furnace1-inner").width(smeltCooldown[0]/(maxSmeltCooldown/mults.furnaceSpeed) * 100 + '%');
 
     // Furnace 2
     inv = inventories.furnace2;
@@ -253,10 +278,16 @@ function furnaceTick() {
         removeItem(copper_ore,'furnace2')
         removeItem(coal,'furnace2',2)
         addItem(copper_bar,'player')
-        smeltCooldown[1] = maxSmeltCooldown/furnaceSpeed;
+        smeltCooldown[1] = maxSmeltCooldown/mults.furnaceSpeed;
+        if (progressStage >= 7 && progressStage < 8)
+            progressStage += 0.1;
+        if (progressStage >= 7.5 && progressStage < 8) {
+            progressStage = 7;
+            newUnlock();
+        }
     }
     smeltCooldown[1]--;
-    $("#furnace2-inner").width(smeltCooldown[1]/maxSmeltCooldown * 100 + '%');
+    $("#furnace2-inner").width(smeltCooldown[1]/(maxSmeltCooldown/mults.furnaceSpeed) * 100 + '%');
 }
 
 function addItem(item,invName,amount = 1) {
@@ -288,11 +319,11 @@ function buyUpgrade(num,list,renderFunc) {
         return !curr.bought;
     })[num - 1];
     if (money >= upgrade.cost) {
+        changeMoney(-1 * upgrade.cost)
         upgrade.func();
         if (renderFunc == renderUpgradeTable)
             upgrade.bought = true;
         renderFunc();
-        changeMoney(-1 * upgrade.cost)
     }
 }
 
@@ -333,7 +364,7 @@ function renderInventoryTable(invName) {
         table += '<td>' + prettyPrint(i) + ':</td>';
         table += '<td>' + inventories[invName][i] + '/' + max + '</td>';
         if (mode == 'sell' && invName == 'player') {
-            table += '<td> $' + items[i].val + '</td>';
+            table += '<td> x $' + items[i].val + '</td>';
             table += '<td> = $' + items[i].val * inventories[invName][i] + '</td>';
             table +=  '<td> [' + count + ']</td>';
         }
@@ -364,7 +395,7 @@ function renderUpgradeTable() {
     let table = ''
     let count = 1;
     for (let i of upgrades) {
-        if (!i.bought) {
+        if (!i.bought && count <= 9) {
             table += '<tr>';
             table += '<td class="border-container center"><p>' + i.name + '</p>';
             table += '<p>$' + i.cost + ' [' + count +']</p>';
@@ -475,7 +506,6 @@ function save() {
     save.upgrades = upgrades;
     save.automations = automations;
     save.mults = mults;
-    save.furnaceSpeed = furnaceSpeed;
     console.log(upgrades,save.upgrades)
     window.sessionStorage.superSmith = JSON.stringify(save);
 }
@@ -488,7 +518,6 @@ function load() {
     upgrades = save.upgrades;
     automations = save.automations;
     mults = save.mults;
-    furnaceSpeed = save.furnaceSpeed;
     console.log(upgrades,save.upgrades)
     changeMode(save.mode);
     changeMoney(0);

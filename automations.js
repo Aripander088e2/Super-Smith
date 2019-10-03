@@ -1,6 +1,6 @@
 let autoCoalMiner = autoMiner('coal',30,60);
 let autoIronMiner = autoMiner('iron_ore',40,70);
-let autoCopperMiner = autoMiner('copper_ore',60,90);
+let autoCopperMiner = autoMiner('copper_ore',50,80);
 
 let autoCoalLoader = autoDoer('coal','Loader',()=>{coalToFurnace(1); coalToFurnace(2);},45,120);
 let autoIronLoader = autoDoer('iron_ore','Loader',()=>{ironToFurnace()},65,140);
@@ -13,8 +13,7 @@ let autoIronBulkheadAssembler = autoDoer('iron_bulkhead','Assembler',function(){
 let autoSimpleCircuitBoardAssembler = autoDoer('simple_circuit_board','Assembler',function(){manufacture(this.resource,true)},45,120);
 let autoSmallEngineAssembler = autoDoer('small_engine','Assembler',function(){manufacture(this.resource,true)},45,120);
 
-var automations = [autoCoalMiner]/*,autoIronMiner,autoCopperMiner,autoCoalLoader,autoIronLoader,autoCopperLoader,
-    autoIronPlateMaker,autoCopperWireMaker,autoIronBulkheadAssembler,autoSimpleCircuitBoardAssembler,autoSmallEngineAssembler];*/
+var automations = [autoCoalMiner]/*autoIronPlateMaker,autoCopperWireMaker,autoIronBulkheadAssembler,autoSimpleCircuitBoardAssembler,autoSmallEngineAssembler];*/
 
 function autoMineTick() {
     for (let i of automations) {
@@ -38,6 +37,25 @@ function autoMiner(r,c,mC) {
         this.cost = parseInt(this.cost + 50 * Math.pow(2, (this.level+1)/ 5));
         this.cooldown = 0;
         this.level++;
+        console.log(this.level,this.resource)
+        if (automations[0].level >= 3 && automations.length == 1)
+            automations.push(autoCoalMiner);
+        else if (automations.length == 2 && automations[1].level >= 3 && copperMining.bought) {
+            automations.push(autoCopperMiner);
+            automations.push(autoCoalLoader)
+        }
+        else if (automations.length == 4 && automations[2].level >= 3 && automations[3].level >= 2)
+            automations.push(autoIronLoader);
+        else if (automations.length == 5 && automations[4].level >= 2)
+            automations.push(autoCopperLoader);
+        else if (automations.length >= 6 && automations[0].level + automations[1].level + automations[2].level >= 11) {
+            upgrades.push(improvedAutoMiners);
+            $('#new-upgrade').hide();
+        }
+        else if (automations.length >= 6 && automations[0].level + automations[1].level + automations[2].level >= 17) {
+            upgrades.push(improvedAutoMiners2);
+            $('#new-upgrade').hide();
+        }
         renderAutomationTable();
     }};
     return miner;
