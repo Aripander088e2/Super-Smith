@@ -114,3 +114,7 @@ th {
 .red-border {
     border-color: #de0000;;
 }
+
+#new-upgrade {
+    font-style: italic;
+}

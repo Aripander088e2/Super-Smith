@@ -29,12 +29,16 @@ var unlocks = [
         upgrades.push(coalMining);
         $('#upgrade').fadeIn(500);
         universalKeyFuncs.p = () => {return changeMode('upgrade')};
+    },
+    ()=>{
+        upgrades.push(improvedFurnaceSpeed);
+        upgrades.push(improvedFurnaceCapacity);
+        $('#new-upgrade').show();
     }
 ]
 
 var produceKeyFuncs = {
     'a':mineIron,
-    'd':mineCopper,
     'K':() => {coalToFurnace(2)},
     'l':copperToFurnace,
     'z':() => {manufacture(iron_plate)},
@@ -63,7 +67,6 @@ var shipyardKeyFuncs = {
 
 var universalKeyFuncs = {
     'i':() => {return changeMode('produce')},
-    'u':() => {return changeMode('automation')},
     'y':() => {return changeMode('shipyard')},
 }
 
@@ -95,7 +98,7 @@ var masterKeyFuncs = {
 
 var inventories = {player:{},furnace1:{},furnace2:{}};
 var inventoryMaxVals = {
-    player:{iron_ore:20,coal:40,copper_ore:20,iron_bar:10,copper_bar:10,
+    player:{iron_ore:20,coal:40,copper_ore:20,iron_bar:20,copper_bar:20,
     copper_wire:50,iron_plate:20,iron_bulkhead:6,simple_circuit_board:15,small_engine:9},
     furnace1:{iron_ore:5,coal:10},
     furnace2:{copper_ore:5,coal:10}
@@ -234,6 +237,12 @@ function furnaceTick() {
         removeItem(coal,'furnace1',2)
         addItem(iron_bar,'player')
         smeltCooldown[0] = maxSmeltCooldown/furnaceSpeed;
+        if (progressStage >= 3 && progressStage < 4)
+            progressStage += 0.1;
+        if (progressStage >= 3.4 && progressStage < 4) {
+            progressStage = 3;
+            newUnlock();
+        }
     }
     smeltCooldown[0]--;
     $("#furnace1-inner").width(smeltCooldown[0]/maxSmeltCooldown * 100 + '%');
@@ -421,8 +430,10 @@ function changeMode(given) {
         $('#' + i).show();
     $('#' + modeDict[mode].id).html(modeDict[mode].text + ' [' + modeDict[mode].key + ']')
     mode = given;
-    if (given == 'upgrade')
+    if (given == 'upgrade') {
+        $('#new-upgrade').hide();
         renderUpgradeTable();
+    }
     else if (given == 'automation')
         renderAutomationTable();
     else if (given == 'shipyard')

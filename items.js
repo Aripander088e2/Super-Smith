@@ -1,7 +1,7 @@
 var iron_ore = {name:'iron_ore',val:2};
 var coal = {name:'coal',val:3};
 var copper_ore = {name:'copper_ore',val:5}
-var iron_bar = {name:'iron_bar',val:12};
+var iron_bar = {name:'iron_bar',val:18};
 var copper_bar = {name:'copper_bar',val:25};
 var copper_wire = {name:'copper_wire',val:7,recipe:{copper_bar:1},output:5};
 var iron_plate = {name:'iron_plate',val: 19, recipe:{iron_bar:1}};
