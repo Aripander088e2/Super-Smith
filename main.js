@@ -128,36 +128,73 @@ function ironToFurnace() {
     let amount = 1 * mults.moveMult;
     let max = inventoryMaxVals['furnace1'].iron_ore;
     if (!inventories['furnace1'].iron_ore || inventories['furnace1'].iron_ore < max)
-        if (removeItem(iron_ore,'player',amount))
+        if (canAfford(iron_ore,'player',amount)) {
+            removeItem(iron_ore,'player',amount);
             addItem(iron_ore,'furnace1',amount);
+        }
+}
+
+function canAfford(item,givenInv,amount) {
+    console.log(item,amount)
+    let inv = inventories[givenInv];
+    let result = true
+    let index;
+    let insufficient = [];
+    if (!item.name) {
+        for (i in item)
+            if (!inv[i] || item[i] * amount > inv[i]) {
+                result = false;
+                if (givenInv == 'player') {
+                    index = Object.keys(inv).indexOf(i);
+                    insufficient.push($('.player-inventory-row')[index]);
+                }
+            }
+        if (!result && givenInv == 'player') {
+            flash(insufficient);
+        }
+    }
+    else {
+        result = (inv[item.name] != undefined && inv[item.name] >= amount);
+        if (givenInv == 'player' && !result) {
+            index = Object.keys(inv).indexOf(item.name);
+            flash($('.player-inventory-row')[index]);
+        }
+    }
+    return result;
 }
 
 function coalToFurnace(num) {
     let amount = 1 * mults.moveMult;
     let max = inventoryMaxVals['furnace' + num].coal;
     if (!inventories['furnace' + num].coal || inventories['furnace' + num].coal < max)
-        if (removeItem(coal,'player',amount))
+        if (canAfford(coal,'player',amount)) {
+            removeItem(coal,'player',amount);
             addItem(coal,'furnace' + num,amount);
+        }
 }
 
 function copperToFurnace() {
     let amount = 1 * mults.moveMult;
     let max = inventoryMaxVals['furnace2'].copper_ore;
     if (!inventories['furnace2'].copper_ore || inventories['furnace2'].copper_ore < max)
-        if (removeItem(copper_ore,'player',amount))
+        if (canAfford(copper_ore,'player',amount)) {
+            removeItem(copper_ore,'player',amount);
             addItem(copper_ore,'furnace2',amount);
+        }
 }
 
 function manufacture(item,auto = false) {
     let amount = (item.output != undefined ? item.output : 1);
     let mult = 1;
     if (manufactured.indexOf(item.name) != -1)
-        mult = (auto ? autoManufacturingMult : manufacturingMult)
+        mult = (auto ? 'autoManufacturingMult' : 'manufacturingMult')
     else if (assembled.indexOf(item.name) != -1)
-        mult = (auto ? autoAssemblyMult : assemblyMult)
+        mult = (auto ? 'autoAssemblyMult' : 'assemblyMult')
     amount *= mults[mult];
-    if (removeRecipe(item.recipe,'player',mult))
+    if (canAfford(item.recipe,'player',mults[mult])) {
+        removeRecipe(item,'player',mults[mult]);
         addItem(item,'player',amount);
+    }
     if (mode == 'shipyard')
         renderShipyard();
 }
@@ -207,7 +244,8 @@ function addItem(item,invName,amount = 1) {
 
 function sellItem(num) {
     let item = Object.keys(inventories['player'])[num - 1];
-    let amount = removeItem(item,'player','all');
+    let amount = inventories['player'][items[item].name];
+    removeItem(item,'player','all');
     changeMoney(amount * items[item].val);
 }
 
@@ -239,41 +277,15 @@ function toggleAutomation(num) {
 function removeItem(item,invName,amount = 1) {
     let inventory = inventories[invName];
     let currItem = (item.name == undefined ? item : item.name);
-    let index;
     if (amount == 'all')
         amount = inventory[currItem];
-    if (inventory[currItem] == undefined || inventory[currItem] < amount) {
-        if (invName == 'player') {
-            index = Object.keys(inventory).indexOf(currItem);
-            flash($('.player-inventory-row')[index]);
-        }
-        return 0;
-    }
     inventory[currItem] -= amount;
     renderInventoryTable(invName);
-    return amount;
 }
 
-function removeRecipe(recipe,givenInv,mult) {
-    let result = true;
-    let insufficient = [];
-    let inv = inventories[givenInv];
-    let index;
-    for (i in recipe)
-        if (!inv[i] || recipe[i] * mult > inv[i]) {
-            result = false;
-            if (givenInv == 'player') {
-                index = Object.keys(inv).indexOf(i);
-                insufficient.push($('.player-inventory-row')[index]);
-            }
-        }
-    if (!result && givenInv == 'player') {
-        flash(insufficient);
-        return false;
-    }
-    for (i in recipe)
-        removeItem(i,givenInv,recipe[i]*mult);
-    return true;
+function removeRecipe(item,givenInv,mult) {
+    for (i in item.recipe)
+        removeItem(items[i],givenInv,item.recipe[i]*mult);
 }
 
 function changeMoney(amount) {
