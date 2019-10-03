@@ -1,7 +1,7 @@
 var upgrades = [];
 
-upgrades.push({name:'Coal Shovel',cost:200,bought:false,func(){
-    coalMoveMult += 1;
+upgrades.push({name:'Improved Furnace Loading',cost:200,bought:false,func(){
+    moveMult += 1;
 }});
 
 upgrades.push({name:'Furnace Speed',cost:20,bought:false,func(){
@@ -69,7 +69,15 @@ upgrades.push({name:'Improved Assembly Capacity 2',cost:60,bought:false,func(){
 }});
 
 upgrades.push({name:'Improved Coal Mining',cost:50,bought:false,func(){
-    coalMineMult += 1;
+    coalMineMult += 2;
+}});
+
+upgrades.push({name:'Improved Iron Mining',cost:50,bought:false,func(){
+    ironMineMult += 1;
+}});
+
+upgrades.push({name:'Improved Copper Mining',cost:50,bought:false,func(){
+    copperMineMult += 1;
 }});
 
 upgrades.push({name:'Improved Auto Miners',cost:200,bought:false,func(){

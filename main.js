@@ -1,5 +1,7 @@
 var coalMineMult = 1;
-var coalMoveMult = 1;
+var ironMineMult = 1;
+var copperMineMult = 1;
+var moveMult = 1;
 var furnaceSpeed = 1;
 
 var flashInterval, flashing;
@@ -101,11 +103,11 @@ $(document).keyup(function(e){
 });
 
 function mineIron() {
-    addItem(iron_ore,'player');
+    addItem(iron_ore,'player',1 * ironMineMult);
 }
 
 function mineCopper() {
-    addItem(copper_ore,'player')
+    addItem(copper_ore,'player',1 * copperMineMult)
 }
 
 function mineCoal() {
@@ -113,14 +115,15 @@ function mineCoal() {
 }
 
 function ironToFurnace() {
+    let amount = 1 * moveMult;
     let max = inventoryMaxVals['furnace1'].iron_ore;
     if (!inventories['furnace1'].iron_ore || inventories['furnace1'].iron_ore < max)
-        if (removeItem(iron_ore,'player'))
-            addItem(iron_ore,'furnace1');
+        if (removeItem(iron_ore,'player',amount))
+            addItem(iron_ore,'furnace1',amount);
 }
 
 function coalToFurnace(num) {
-    let amount = 1 * coalMoveMult;
+    let amount = 1 * moveMult;
     let max = inventoryMaxVals['furnace' + num].coal;
     if (!inventories['furnace' + num].coal || inventories['furnace' + num].coal < max)
         if (removeItem(coal,'player',amount))
@@ -128,10 +131,11 @@ function coalToFurnace(num) {
 }
 
 function copperToFurnace() {
+    let amount = 1 * moveMult;
     let max = inventoryMaxVals['furnace2'].copper_ore;
     if (!inventories['furnace2'].copper_ore || inventories['furnace2'].copper_ore < max)
-        if (removeItem(copper_ore,'player'))
-            addItem(copper_ore,'furnace2');
+        if (removeItem(copper_ore,'player',amount))
+            addItem(copper_ore,'furnace2',amount);
 }
 
 function manufacture(item) {
