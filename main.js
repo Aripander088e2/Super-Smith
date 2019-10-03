@@ -72,7 +72,7 @@ var masterKeyFuncs = {
 var inventories = {player:{},furnace1:{},furnace2:{}};
 var inventoryMaxVals = {
     player:{iron_ore:20,coal:40,copper_ore:20,iron_bar:10,copper_bar:10,
-    copper_wire:50,iron_plate:50,iron_bulkhead:6,simple_circuit_board:15,small_engine:9},
+    copper_wire:50,iron_plate:20,iron_bulkhead:6,simple_circuit_board:15,small_engine:9},
     furnace1:{iron_ore:5,coal:10},
     furnace2:{copper_ore:5,coal:10}
 }
@@ -266,11 +266,13 @@ function renderInventoryTable(invName) {
         }
         else if (invName == 'player'){
             curr = automations.filter(auto => auto.resource == items[i] && auto.type != 'loader')[0];
-            if (i == 'iron_bar')
-                curr = autoIronLoader;
-            else if (i == 'copper_bar')
-                curr = autoCopperLoader;
-            table += '<td>+' + prettyPrint(20/curr.maxCooldown) + '/s</td>';
+            if (curr && curr.maxCooldown) {
+                if (i == 'iron_bar')
+                    curr = autoIronLoader;
+                else if (i == 'copper_bar')
+                    curr = autoCopperLoader;
+                table += '<td>+' + prettyPrint(curr.amount * (20/curr.maxCooldown)) + '/s</td>';
+            }
         }
         table += '</tr>';
         count++;
@@ -349,8 +351,11 @@ function changeMode(given) {
         renderAutomationTable();
     else if (given == 'shipyard')
         renderShipyard();
-    else
+    else {
         renderInventoryTable('player');
+        renderInventoryTable('furnace1')
+        renderInventoryTable('furnace2')
+    }
 }
 
 function flash(element) {

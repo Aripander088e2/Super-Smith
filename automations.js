@@ -21,7 +21,7 @@ function autoMineTick() {
         if (i.maxCooldown) {
             if (i.cooldown <= 0) {
                 if (i.type == 'miner')
-                    addItem(i.resource,'player',1);
+                    addItem(i.resource,'player',i.amount);
                 else
                     i.autoFunc();
                 i.cooldown = i.maxCooldown;
@@ -32,7 +32,7 @@ function autoMineTick() {
 }
 
 function autoMiner(r,c,mC) {
-    let miner = {name:'Automatic ' + prettyPrint(r) + ' Miner',level:0,cost:c,resource:items[r],cooldown:0,maxCooldown:0,type:'miner',
+    let miner = {name:'Automatic ' + prettyPrint(r) + ' Miner',level:0,cost:c,resource:items[r],amount:1,cooldown:0,maxCooldown:0,type:'miner',
     func: function(){
         this.maxCooldown = mC / (1 + Math.pow(this.level,1.6));
         this.cost = parseInt(this.cost + 50 * Math.pow(2, (this.level+1)/ 5));
@@ -44,7 +44,7 @@ function autoMiner(r,c,mC) {
 }
 
 function autoDoer(r,v,f,c,mC) {
-    let loader = {name:'Automatic ' + prettyPrint(r) + ' ' + v,level:0,cost:c,resource:items[r],autoFunc:f,cooldown:0,maxCooldown:0,type:v.toLowerCase(),
+    let loader = {name:'Automatic ' + prettyPrint(r) + ' ' + v,level:0,cost:c,resource:items[r],amount:1,autoFunc:f,cooldown:0,maxCooldown:0,type:v.toLowerCase(),
     func: function(){
         this.maxCooldown = mC / (1 + Math.pow(this.level,1.6));
         this.cost = parseInt(this.cost + 50 * Math.pow(2, (this.level+1)/ 5));
