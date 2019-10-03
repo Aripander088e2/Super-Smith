@@ -69,6 +69,10 @@ li {
     border-radius: 0.5em;
 }
 
+#automation-container {
+    width: fit-content;
+}
+
 .automation-item {
     text-align: center;
 }
@@ -97,4 +101,16 @@ th {
 
 #sell-items { 
     float:right;
+}
+
+.green {
+    color: #0f9e0f;;
+}
+
+.red {
+    color: #de0000;;
+}
+
+.red-border {
+    border-color: #de0000;;
 }

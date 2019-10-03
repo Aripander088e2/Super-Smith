@@ -1,3 +1,6 @@
+var mode = "produce";
+var subMode = '';
+
 var mults = {};
 mults.coalMineMult = 1;
 mults.ironMineMult = 1;
@@ -34,11 +37,12 @@ var sellKeyFuncs = {
 }
 
 var upgradeKeyFuncs = {
-    'num':num => {buyUpgrade(num,upgrades,renderUpgradeTable)}
+    'num':num => {buyUpgrade(num,upgrades,renderUpgradeTable)},
 }
 
 var automationKeyFuncs = {
-    'num':num => {buyUpgrade(num,automations,renderAutomationTable)}
+    'num':num => {(subMode == '' ? buyUpgrade(num,automations,renderAutomationTable) : toggleAutomation(num))},
+    't':automationModeToggle
 }
 
 var shipyardKeyFuncs = {
@@ -95,8 +99,6 @@ var smeltCooldown = [0,0];
 var maxSmeltCooldown = 60;
 
 let money = 10000;
-
-var mode = "produce";
 
 $(document).keyup(function(e){
     let keyFuncs = masterKeyFuncs[mode];
@@ -209,6 +211,12 @@ function sellItem(num) {
     changeMoney(amount * items[item].val);
 }
 
+function automationModeToggle() {
+    subMode = (subMode == '' ? 'toggle' : '');
+    $('#automation-toggle-text').html((subMode == '' ? 'Toggle Mode [t]' : 'Buy Mode [t]'));
+    renderAutomationTable();
+}
+
 function buyUpgrade(num,list,renderFunc) {
     let upgrade = list.filter(curr =>{
         return !curr.bought;
@@ -220,6 +228,12 @@ function buyUpgrade(num,list,renderFunc) {
         renderFunc();
         changeMoney(-1 * upgrade.cost)
     }
+}
+
+function toggleAutomation(num) {
+    automations[num - 1].on = !automations[num-1].on;
+    renderAutomationTable();
+    renderInventoryTable('player');
 }
 
 function removeItem(item,invName,amount = 1) {
@@ -283,16 +297,16 @@ function renderInventoryTable(invName) {
         }
         else if (invName == 'player'){
             curr = automations.filter(auto => auto.resource == items[i] && auto.type != 'loader')[0];
-            if (curr && curr.maxCooldown) {
+            if (curr && curr.maxCooldown && curr.on) {
                 let mult = 1;
                 if (resources.indexOf(curr.resource.name) != -1)
-                    mult = autoMineMult;
+                    mult = 'autoMineMult';
                 else if (manufactured.indexOf(curr.resource.name) != -1)
-                    mult = autoManufacturingMult;
+                    mult = 'autoManufacturingMult';
                 else if (assembled.indexOf(curr.resource.name) != -1)
-                    mult = autoAssemblyMult;
+                    mult = 'autoAssemblyMult';
                 if (i == 'iron_bar')
-                    curr = autoIronLoader;
+                    curr = 'autoIronLoader';
                 else if (i == 'copper_bar')
                     curr = autoCopperLoader;
                 table += '<td>+' + prettyPrint(curr.amount * mults[mult] * (20/curr.maxCooldown)) + '/s</td>';
@@ -325,10 +339,15 @@ function renderAutomationTable() {
     for (let i of automations) {
         if (count % 2 == 1)
             table += '<tr>';
-        table += '<td class="border-container automation-item"><p class="title">';
+        table += '<td class="border-container automation-item ' + (i.on ? '' : 'red-border') + '"><p class="title">';
         table += i.name + '</p>';
         table += '<p>Level:' + i.level + '</p>';
-        table += '<p>Upgrade: $' + i.cost + ' [' + (count <= 9 ? count : symbols[count-10]) +']</p></td>';
+        if (subMode == '')
+            table += '<p>Upgrade: $' + i.cost + ' [' + (count <= 9 ? count : symbols[count-10]) +']</p></td>';
+        else {
+            table += '<p> <span class="' + (i.on ? 'green' : 'red') + '">' + (i.on ? 'On' : 'Off');
+            table += '</span> [' + (count <= 9 ? count : symbols[count-10]) +']</p></td>';
+        }
         if (count % 2 == 0)
             table += '</tr>';
         count++;
