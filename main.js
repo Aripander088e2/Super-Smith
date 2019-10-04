@@ -53,10 +53,7 @@ var unlocks = [
 ]
 
 var produceKeyFuncs = {
-    'a':mineIron,
-    'b':() => {manufacture(iron_bulkhead)},
-    'n':() => {manufacture(simple_circuit_board)},
-    'm':() => {manufacture(small_engine)},
+    'a':mineIron
 };
 
 var sellKeyFuncs = {
@@ -297,7 +294,32 @@ function addItem(item,invName,amount = 1) {
         inventory[item.name] = amount;
     else
         inventory[item.name] += amount;
+    if (inventories.player.small_engine >= 2 && upgrades.indexOf(improvedAssembly) == -1) {
+        upgrades.push(improvedAssembly);
+        $('#new-upgrade').show();
+    }
+    if (item.name == 'escape_pod' && upgrades.indexOf(improvedAssembly2) == -1) {
+        upgrades.push(improvedAssembly2);
+        upgrades.push(improvedAutoAssembly2);
+        $('#new-upgrade').show();
+    }
     inventory[item.name] = Math.min(inventory[item.name],max);
+    if (inventory[item.name] >= max * .85) {
+        if (resources.indexOf(item.name) != -1 && upgrades.indexOf(improvedResourceCapacity2) == -1)
+            upgrades.push(improvedResourceCapacity2)
+        else if (manufactured.indexOf(item.name) != -1) {
+            if (upgrades.indexOf(improvedManufacturingCapacity) == -1)
+                upgrades.push(improvedManufacturingCapacity);
+            else if (upgrades.indexOf(improvedManufacturingCapacity2) == -1)
+                upgrades.push(improvedManufacturingCapacity2);
+        }
+        else if (assembled.indexOf(item.name) != -1) {
+            if (upgrades.indexOf(improvedAssemblyCapacity) == -1)
+                upgrades.push(improvedAssemblyCapacity);
+            else if (upgrades.indexOf(improvedAssemblyCapacity2) == -1)
+                upgrades.push(improvedAssemblyCapacity2);
+        }
+    }
     renderInventoryTable(invName);
 }
 

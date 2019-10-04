@@ -35,6 +35,10 @@ let improvedFurnaceSpeed = {name:'Furnace Speed',cost:150,bought:false,func(){
     upgrades.push(improvedCoalMining);
 }};
 
+let improvedFurnaceSpeed2 = {name:'Furnace Speed 2',cost:100,bought:false,func(){
+    furnaceSpeed += 1;
+}};
+
 let improvedCoalMining = {name:'Improved Coal Mining',cost:250,bought:false,func(){
     mults.coalMineMult += 2;
     upgrades.push(copperMining);
@@ -67,16 +71,6 @@ let improvedResourceCapacity = {name:'Improved Resource Capacity',cost:60,bought
     renderInventoryTable('player');
 }};
 
-let ironPlateManufacturing = {name:'Iron Plate Manufacturing',cost:300,bought:false,func(){
-    produceKeyFuncs.z = () => {manufacture(iron_plate)};
-}};
-
-let copperWireManufacturing = {name:'Iron Plate Manufacturing',cost:500,bought:false,func(){
-    produceKeyFuncs.x = () => {manufacture(copper_wire)};
-    upgrades.push(improvedFurnaceCapacity2);
-    upgrades.push(improvedCopperMining);
-}};
-
 let improvedFurnaceCapacity2 = {name:'Improved Furnace Capacity 2',cost:300,bought:false,func(){
     for (let i in inventoryMaxVals.furnace1)
         inventoryMaxVals.furnace1[i] = Math.ceil(inventoryMaxVals.furnace1[i] * 1.5);
@@ -98,58 +92,102 @@ let improvedAutoMiners = {name:'Improved Auto Miners 2',cost:2000,bought:false,f
     renderInventoryTable('player');
 }};
 
-/*
-upgrades.push({name:'Improved Resource Capacity 2',cost:600,bought:false,func(){
+let ironPlateManufacturing = {name:'Iron Plate Manufacturing',cost:300,bought:false,func(){
+    produceKeyFuncs.z = () => {manufacture(iron_plate)};
+    automations.push(autoIronPlateMaker);
+    upgrades.push(ironBulkheadAssembly);
+    $('#iron_plate-text').show();
+}};
+
+let copperWireManufacturing = {name:'Iron Plate Manufacturing',cost:500,bought:false,func(){
+    produceKeyFuncs.x = () => {manufacture(copper_wire)};
+    upgrades.push(improvedFurnaceCapacity2);
+    upgrades.push(improvedCopperMining);
+    automations.push(autoCopperWireMaker);
+    upgrades.push(simpleCircuitBoardAssembly);
+    $('copper_wire-text').show();
+}};
+
+let ironBulkheadAssembly = {name:'Iron Bulkhead Assembly',cost:600,bought:false,func(){
+    produceKeyFuncs.b = () => {manufacture(iron_bulkhead)};
+    automations.push(autoIronBulkheadAssembler);
+    upgrades.push(improvedManufacturing);
+    $('#iron_bulkhead-text').show();
+}};
+
+let simpleCircuitBoardAssembly = {name:'Simple Circuit Board Assembly',cost:1200,bought:false,func(){
+    produceKeyFuncs.n = () => {manufacture(simple_circuit_board)};
+    automations.push(autoSimpleCircuitBoardAssembler);
+    $('#simple_circuit_board-text').show();
+    upgrades.push(smallEngineAssembly);
+    upgrades.push(improvedFurnaceSpeed2);
+}};
+
+let smallEngineAssembly = {name:'Small Engine Assembly',cost:2500,bought:false,func(){
+    produceKeyFuncs.m = () => {manufacture(small_engine)};
+    automations.push(autoSmallEngineAssembler);
+    upgrades.push(improvedManufacturing2)
+    $('#small_engine-text').show();
+}};
+
+let improvedManufacturing = {name:'Improved Manufacturing',cost:200,bought:false,func(){
+    mults.manufacturingMult += 1;
+}};
+
+let improvedManufacturing2 = {name:'Improved Manufacturing 2',cost:200,bought:false,func(){
+    mults.manufacturingMult += 1;
+}};
+
+let improvedAutoManufacturing = {name:'Improved Auto Manufacturing',cost:200,bought:false,func(){
+    mults.autoManufacturingMult += 1;
+}};
+
+let improvedAutoAssembly = {name:'Improved Auto Assembly',cost:200,bought:false,func(){
+    mults.autoAssemblyMult += 1;
+}};
+
+let improvedAssembly = {name:'Improved Assembly',cost:200,bought:false,func(){
+    mults.assemblyMult += 1;
+}};
+
+let improvedAutoAssembly2 = {name:'Improved Auto Assembly 2',cost:200,bought:false,func(){
+    mults.autoAssemblyMult += 1;
+}};
+
+let improvedAssembly2 = {name:'Improved Assembly 2',cost:200,bought:false,func(){
+    mults.assemblyMult += 1;
+}};
+
+let improvedResourceCapacity2 = {name:'Improved Resource Capacity 2',cost:600,bought:false,func(){
     for (let i of resources)
         inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
     renderInventoryTable('player');
-}});
+}}
 
-upgrades.push({name:'Improved Manufacturing',cost:200,bought:false,func(){
-    mults.manufacturingMult += 1;
-}});
-
-upgrades.push({name:'Improved Auto Manufacturing',cost:200,bought:false,func(){
-    mults.autoManufacturingMult += 1;
-}});
-
-upgrades.push({name:'Improved Assembly',cost:200,bought:false,func(){
-    mults.assemblyMult += 1;
-}});
-
-upgrades.push({name:'Improved Auto Assembly',cost:200,bought:false,func(){
-    mults.autoAssemblyMult += 1;
-}});
-
-upgrades.push({name:'Furnace Speed 2',cost:100,bought:false,func(){
-    furnaceSpeed += 1;
-}});
-
-upgrades.push({name:'Improved Manufacturing Capacity',cost:60,bought:false,func(){
+let improvedManufacturingCapacity = {name:'Improved Manufacturing Capacity',cost:60,bought:false,func(){
     let products = ['iron_bar','copper_bar','iron_plate','copper_wire']
     for (let i of products)
         inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
     renderInventoryTable('player');
-}});
+}};
 
-upgrades.push({name:'Improved Manufacturing Capacity 2',cost:60,bought:false,func(){
+let improvedManufacturingCapacity2 = {name:'Improved Manufacturing Capacity 2',cost:60,bought:false,func(){
     let products = ['iron_bar','copper_bar','iron_plate','copper_wire']
     for (let i of products)
         inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
     renderInventoryTable('player');
-}});
+}};
 
-upgrades.push({name:'Improved Assembly Capacity ',cost:60,bought:false,func(){
+let improvedAssemblyCapacity = {name:'Improved Assembly Capacity ',cost:60,bought:false,func(){
     let products = ['iron_bulkhead','simple_circuit_board','small_engine'];
     for (let i of products)
         inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
     renderInventoryTable('player');
-}});
+}};
 
-upgrades.push({name:'Improved Assembly Capacity 2',cost:60,bought:false,func(){
+let improvedAssemblyCapacity2 = {name:'Improved Assembly Capacity 2',cost:60,bought:false,func(){
     let products = ['iron_bulkhead','simple_circuit_board','small_engine'];
     for (let i of products)
         inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
     renderInventoryTable('player');
-}});
-*/
+}};

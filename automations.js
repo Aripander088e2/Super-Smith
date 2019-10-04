@@ -13,7 +13,7 @@ let autoIronBulkheadAssembler = autoDoer('iron_bulkhead','Assembler',function(){
 let autoSimpleCircuitBoardAssembler = autoDoer('simple_circuit_board','Assembler',function(){manufacture(this.resource,true)},45,120);
 let autoSmallEngineAssembler = autoDoer('small_engine','Assembler',function(){manufacture(this.resource,true)},45,120);
 
-var automations = [autoCoalMiner]/*autoIronPlateMaker,autoCopperWireMaker,autoIronBulkheadAssembler,autoSimpleCircuitBoardAssembler,autoSmallEngineAssembler];*/
+var automations = [autoCoalMiner];
 
 function autoMineTick() {
     for (let i of automations) {
@@ -48,12 +48,20 @@ function autoMiner(r,c,mC) {
             automations.push(autoIronLoader);
         else if (automations.length == 5 && automations[4].level >= 2)
             automations.push(autoCopperLoader);
-        else if (automations.length >= 6 && automations[0].level + automations[1].level + automations[2].level >= 11) {
+        else if (automations.length >= 6 && automations[0].level + automations[1].level + automations[2].level >= 11 && upgrades.indexOf(improvedAutoMiners) == -1) {
             upgrades.push(improvedAutoMiners);
             $('#new-upgrade').hide();
         }
-        else if (automations.length >= 6 && automations[0].level + automations[1].level + automations[2].level >= 17) {
+        else if (automations.length >= 6 && automations[0].level + automations[1].level + automations[2].level >= 17 && upgrades.indexOf(improvedAutoMiners2) == -1) {
             upgrades.push(improvedAutoMiners2);
+            $('#new-upgrade').hide();
+        }
+        else if (automations.length >= 7 && automations[6].level >= 2 && upgrades.indexOf(improvedAutoManufacturing) == -1) {
+            upgrades.push(improvedAutoManufacturing);
+            $('#new-upgrade').hide();
+        }
+        else if (automations.length >= 10 && automations[9].level >= 2 && upgrades.indexOf(improvedAutoAssembly) == -1) {
+            upgrades.push(improvedAutoAssembly);
             $('#new-upgrade').hide();
         }
         renderAutomationTable();
