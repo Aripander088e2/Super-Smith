@@ -231,16 +231,16 @@ function copperToFurnace() {
 }
 
 function manufacture(item,auto = false) {
-    let amount = (item.output != undefined ? item.output : 1);
+    let amount;
     let mult = 1;
     if (manufactured.indexOf(item.name) != -1)
         mult = (auto ? 'autoManufacturingMult' : 'manufacturingMult')
     else if (assembled.indexOf(item.name) != -1)
         mult = (auto ? 'autoAssemblyMult' : 'assemblyMult')
-    amount *= mults[mult];
-    if (canAfford(item.recipe,'player',mults[mult])) {
-        removeRecipe(item,'player',mults[mult]);
-        addItem(item,'player',amount);
+    amount = Math.min(mults[mult],inventoryMaxVals['player'][item.name] - inventories['player'][item.name]);
+    if (canAfford(item.recipe,'player',amount)) {
+        removeRecipe(item,'player',amount);
+        addItem(item,'player',amount * (item.output != undefined ? item.output : 1));
         if (totalProduced[item.name] == 0)
             $('#' + item.name + '-text .cost').hide();
         totalProduced[item.name]++;
