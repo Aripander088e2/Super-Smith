@@ -18,7 +18,7 @@ let copperForging = {name:'Copper Forging',cost:350,bought:false,func(){
     produceKeyFuncs.l = copperToFurnace;
     produceKeyFuncs.K = () => {coalToFurnace(2)};
     $('#load-copper_ore-text').show();
-    $('#load-coal2-text').show();
+    $('#load_coal2-text').show();
 }}
 
 let improvedFurnaceCapacity = {name:'Improved Furnace Capacity',cost:120,bought:false,func(){
@@ -87,7 +87,7 @@ let improvedAutoMiners = {name:'Improved Auto Miners',cost:500,bought:false,func
     renderInventoryTable('player');
 }};
 
-let improvedAutoMiners = {name:'Improved Auto Miners 2',cost:2000,bought:false,func(){
+let improvedAutoMiners2 = {name:'Improved Auto Miners 2',cost:2000,bought:false,func(){
     mults.autoMineMult++;
     renderInventoryTable('player');
 }};
