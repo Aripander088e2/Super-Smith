@@ -38,7 +38,7 @@ function autoMiner(r,c,mC) {
         this.cooldown = 0;
         this.level++;
         console.log(this.level,this.resource)
-        if (automations[0].level >= 3 && automations.length == 1)
+        if (automations[0].level >= 3 && automations.indexOf(autoCoalMiner) == -1)
             automations.push(autoCoalMiner);
         else if (automations.length == 2 && automations[1].level >= 3 && copperMining.bought) {
             automations.push(autoCopperMiner);

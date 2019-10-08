@@ -1,6 +1,7 @@
 const symbols = ['0','!','@','#','$','%','^','&','*','(',')'];
 
 function prettyPrint(given) {
+    console.log(given)
     if (given == undefined)
         return 0;
     if (isNaN(given)) {

@@ -18,9 +18,16 @@ var flashInterval, flashing;
 
 var sellText = true;
 
+var escape_pod = {name:'escape_pod',val:1000,recipe:{iron_bulkhead:2,small_engine:3,simple_circuit_board:5}};
+var ships = {escape_pod:escape_pod};
+
 var totalProduced = {money:0};
 for (i in items)
     totalProduced[i] = 0;
+
+for (i in ships) {
+    totalProduced[i] = 0;
+}
 
 var produceKeyFuncs = {
     'a':mineIron
@@ -81,10 +88,6 @@ var inventoryMaxVals = {
     furnace1:{iron_ore:5,coal:10},
     furnace2:{copper_ore:5,coal:10}
 }
-
-var escape_pod = {name:'escape_pod',val:1000,recipe:{iron_bulkhead:2,small_engine:3,simple_circuit_board:5}};
-
-var ships = {escape_pod:escape_pod};
 
 var smeltCooldown = [0,0];
 var maxSmeltCooldown = 60;
@@ -208,7 +211,7 @@ function gameTick() {
 function furnaceTick() {
     // Furnace 1
     let inv = inventories.furnace1;
-    if (inv.iron_ore && inv.coal >= 2 && smeltCooldown[0] <= 0) {
+    if (inv.iron_ore && inv.coal >= 2 && smeltCooldown[0] <= 0 && inventories.player.iron_bar != inventoryMaxVals.player.iron_bar) {
         removeItem(iron_ore,'furnace1')
         removeItem(coal,'furnace1',2)
         addItem(iron_bar,'player')
@@ -220,7 +223,7 @@ function furnaceTick() {
 
     // Furnace 2
     inv = inventories.furnace2;
-    if (inv.copper_ore && inv.coal >= 2 && smeltCooldown[1] <= 0) {
+    if (inv.copper_ore && inv.coal >= 2 && smeltCooldown[1] <= 0 && inventories.player.copper_bar != inventoryMaxVals.player.copper_bar) {
         removeItem(copper_ore,'furnace2')
         removeItem(coal,'furnace2',2)
         addItem(copper_bar,'player')
