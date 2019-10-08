@@ -16,47 +16,11 @@ mults.autoAssemblyMult = 1;
 
 var flashInterval, flashing;
 
-var progressStage = 0;
-
 var sellText = true;
 
-var totalProduced = {};
+var totalProduced = {money:0};
 for (i in items)
     totalProduced[i] = 0;
-
-var unlocks = [
-    ()=>{ $('#iron_ore-press').fadeOut();},
-    ()=>{
-        $('#sell-items').fadeIn(500);
-        universalKeyFuncs.o = () => {return changeMode('sell')};
-    },
-    ()=>{
-        upgrades.push(coalMining);
-        $('#upgrade').fadeIn(500);
-        universalKeyFuncs.p = () => {return changeMode('upgrade')};
-    },
-    ()=>{
-        upgrades.push(improvedFurnaceSpeed);
-        upgrades.push(automatedCoalMining);
-        $('#new-upgrade').show();
-    },
-    ()=>{
-        upgrades.push(improvedResourceCapacity);
-        $('#new-upgrade').show();
-    },
-    ()=>{
-        upgrades.push(ironPlateManufacturing);
-        $('#new-upgrade').show();
-    },
-    ()=>{
-        upgrades.push(copperForging);
-        $('#new-upgrade').show();
-    },
-    ()=>{
-        upgrades.push(copperWireManufacturing);
-        $('#new-upgrade').show();
-    }
-]
 
 var produceKeyFuncs = {
     'a':mineIron
@@ -139,35 +103,18 @@ $(document).keyup(function(e){
         keyFuncs[e.key]();
 });
 
-function newUnlock() {
-    unlocks.shift()();
-    progressStage++;
-}
-
 function mineIron() {
     addItem(iron_ore,'player',1 * mults.ironMineMult);
-    if (progressStage == 0 && inventories['player'].iron_ore == 2)
-        newUnlock();
-    else if (progressStage == 1 && inventories['player'].iron_ore == 7)
-        newUnlock();
     totalProduced.iron_ore++;
 }
 
 function mineCopper() {
     addItem(copper_ore,'player',1 * mults.copperMineMult)
-    if (progressStage >= 6 && progressStage < 7)
-        progressStage += 0.1;
-    if (progressStage >= 6.8 && progressStage < 7) {
-        progressStage = 6;
-        newUnlock();
-    }
     totalProduced.copper_ore++;
 }
 
 function mineCoal() {
     addItem(coal,'player',1 * mults.coalMineMult);
-    if (progressStage == 4 && inventories.player.coal > 20)
-        newUnlock();
     totalProduced.coal++;
 }
 
@@ -255,6 +202,7 @@ function gameTick() {
     furnaceTick();
     furnaceTick();
     autoMineTick();
+    checkUnlocks();
 }
 
 function furnaceTick() {
@@ -266,18 +214,6 @@ function furnaceTick() {
         addItem(iron_bar,'player')
         totalProduced.iron_bar++;
         smeltCooldown[0] = maxSmeltCooldown/mults.furnaceSpeed;
-        if (progressStage >= 3 && progressStage < 4)
-            progressStage += 0.1;
-        if (progressStage >= 3.4 && progressStage < 4) {
-            progressStage = 3;
-            newUnlock();
-        }
-        if (progressStage >= 5 && progressStage < 6)
-            progressStage += 0.1;
-        if (progressStage >= 5.9 && progressStage < 6) {
-            progressStage = 5;
-            newUnlock();
-        }
     }
     smeltCooldown[0]--;
     $("#furnace1-inner").width(smeltCooldown[0]/(maxSmeltCooldown/mults.furnaceSpeed) * 100 + '%');
@@ -290,12 +226,6 @@ function furnaceTick() {
         addItem(copper_bar,'player')
         totalProduced.copper_bar++;
         smeltCooldown[1] = maxSmeltCooldown/mults.furnaceSpeed;
-        if (progressStage >= 7 && progressStage < 8)
-            progressStage += 0.1;
-        if (progressStage >= 7.5 && progressStage < 8) {
-            progressStage = 7;
-            newUnlock();
-        }
     }
     smeltCooldown[1]--;
     $("#furnace2-inner").width(smeltCooldown[1]/(maxSmeltCooldown/mults.furnaceSpeed) * 100 + '%');
@@ -308,32 +238,7 @@ function addItem(item,invName,amount = 1) {
         inventory[item.name] = amount;
     else
         inventory[item.name] += amount;
-    if (inventories.player.small_engine >= 2 && upgrades.indexOf(improvedAssembly) == -1) {
-        upgrades.push(improvedAssembly);
-        $('#new-upgrade').show();
-    }
-    if (item.name == 'escape_pod' && upgrades.indexOf(improvedAssembly2) == -1) {
-        upgrades.push(improvedAssembly2);
-        upgrades.push(improvedAutoAssembly2);
-        $('#new-upgrade').show();
-    }
     inventory[item.name] = Math.min(inventory[item.name],max);
-    if (inventory[item.name] >= max * .85) {
-        if (resources.indexOf(item.name) != -1 && upgrades.indexOf(improvedResourceCapacity2) == -1)
-            upgrades.push(improvedResourceCapacity2)
-        else if (manufactured.indexOf(item.name) != -1) {
-            if (upgrades.indexOf(improvedManufacturingCapacity) == -1)
-                upgrades.push(improvedManufacturingCapacity);
-            else if (upgrades.indexOf(improvedManufacturingCapacity2) == -1)
-                upgrades.push(improvedManufacturingCapacity2);
-        }
-        else if (assembled.indexOf(item.name) != -1) {
-            if (upgrades.indexOf(improvedAssemblyCapacity) == -1)
-                upgrades.push(improvedAssemblyCapacity);
-            else if (upgrades.indexOf(improvedAssemblyCapacity2) == -1)
-                upgrades.push(improvedAssemblyCapacity2);
-        }
-    }
     renderInventoryTable(invName);
 }
 
@@ -387,9 +292,9 @@ function removeRecipe(item,givenInv,mult) {
 
 function changeMoney(amount) {
     money += amount;
+    if (amount > 0)
+        totalProduced.money += amount;
     $('#money-val').html(money);
-    if (progressStage == 2 && money >= 25)
-        newUnlock();
 }
 
 function renderInventoryTable(invName) {
