@@ -37,33 +37,16 @@ function autoMiner(r,c,mC) {
         this.cost = parseInt(this.cost + 50 * Math.pow(2, (this.level+1)/ 5));
         this.cooldown = 0;
         this.level++;
-        console.log(this.level,this.resource)
-        if (automations[0].level >= 3 && automations.indexOf(autoCoalMiner) == -1)
-            automations.push(autoCoalMiner);
-        else if (automations.length == 2 && automations[1].level >= 3 && copperMining.bought) {
-            automations.push(autoCopperMiner);
-            automations.push(autoCoalLoader)
-        }
-        else if (automations.length == 4 && automations[2].level >= 3 && automations[3].level >= 2)
-            automations.push(autoIronLoader);
-        else if (automations.length == 5 && automations[4].level >= 2)
-            automations.push(autoCopperLoader);
-        else if (automations.length >= 6 && automations[0].level + automations[1].level + automations[2].level >= 11 && upgrades.indexOf(improvedAutoMiners) == -1) {
+
+        if (upgrades.indexOf(improvedAutoMiners) == -1 && automations.length >= 5 && automations[0].level + automations[1].level + automations[2].level >= 11) {
             upgrades.push(improvedAutoMiners);
             $('#new-upgrade').hide();
         }
-        else if (automations.length >= 6 && automations[0].level + automations[1].level + automations[2].level >= 17 && upgrades.indexOf(improvedAutoMiners2) == -1) {
+        else if (upgrades.indexOf(improvedAutoMiners2) == -1 && automations.length >= 6 && automations[0].level + automations[1].level + automations[2].level >= 17) {
             upgrades.push(improvedAutoMiners2);
             $('#new-upgrade').hide();
         }
-        else if (automations.length >= 7 && automations[6].level >= 2 && upgrades.indexOf(improvedAutoManufacturing) == -1) {
-            upgrades.push(improvedAutoManufacturing);
-            $('#new-upgrade').hide();
-        }
-        else if (automations.length >= 10 && automations[9].level >= 2 && upgrades.indexOf(improvedAutoAssembly) == -1) {
-            upgrades.push(improvedAutoAssembly);
-            $('#new-upgrade').hide();
-        }
+
         renderAutomationTable();
     }};
     return miner;
@@ -76,6 +59,16 @@ function autoDoer(r,v,f,c,mC) {
         this.cost = parseInt(this.cost + 50 * Math.pow(2, (this.level+1)/ 5));
         this.cooldown = 0;
         this.level++;
+
+        if (upgrades.indexOf(improvedAutoManufacturing) == -1 && automations.length >= 7 && automations[6].level >= 2) {
+            upgrades.push(improvedAutoManufacturing);
+            $('#new-upgrade').hide();
+        }
+        if (upgrades.indexOf(improvedAutoAssembly) == -1 && automations.length >= 10 && automations[9].level >= 2) {
+            upgrades.push(improvedAutoAssembly);
+            $('#new-upgrade').hide();
+        }
+
         renderAutomationTable();
     }};
     return loader;

@@ -57,8 +57,6 @@ let automatedCoalMining = {name:'Automated Coal Mining',cost:250,bought:false,fu
 let copperMining = {name:'Copper Mining',cost:400,bought:false,func(){
     produceKeyFuncs.d = mineCopper;
     $('#copper_ore-text').show();
-    if (automations.length == 2 && automations[1].level >= 3 && copperMining.bought)
-        automations.push(autoCopperMiner);
 }};
 
 let improvedFurnaceLoading = {name:'Improved Furnace Loading',cost:200,bought:false,func(){
@@ -94,8 +92,6 @@ let improvedAutoMiners2 = {name:'Improved Auto Miners 2',cost:2000,bought:false,
 
 let ironPlateManufacturing = {name:'Iron Plate Manufacturing',cost:300,bought:false,func(){
     produceKeyFuncs.z = () => {manufacture(iron_plate)};
-    automations.push(autoIronPlateMaker);
-    upgrades.push(ironBulkheadAssembly);
     $('#iron_plate-text').show();
 }};
 
@@ -103,29 +99,23 @@ let copperWireManufacturing = {name:'Iron Plate Manufacturing',cost:500,bought:f
     produceKeyFuncs.x = () => {manufacture(copper_wire)};
     upgrades.push(improvedFurnaceCapacity2);
     upgrades.push(improvedCopperMining);
-    automations.push(autoCopperWireMaker);
-    upgrades.push(simpleCircuitBoardAssembly);
     $('copper_wire-text').show();
 }};
 
 let ironBulkheadAssembly = {name:'Iron Bulkhead Assembly',cost:600,bought:false,func(){
     produceKeyFuncs.b = () => {manufacture(iron_bulkhead)};
-    automations.push(autoIronBulkheadAssembler);
     upgrades.push(improvedManufacturing);
     $('#iron_bulkhead-text').show();
 }};
 
 let simpleCircuitBoardAssembly = {name:'Simple Circuit Board Assembly',cost:1200,bought:false,func(){
     produceKeyFuncs.n = () => {manufacture(simple_circuit_board)};
-    automations.push(autoSimpleCircuitBoardAssembler);
     $('#simple_circuit_board-text').show();
-    upgrades.push(smallEngineAssembly);
     upgrades.push(improvedFurnaceSpeed2);
 }};
 
 let smallEngineAssembly = {name:'Small Engine Assembly',cost:2500,bought:false,func(){
     produceKeyFuncs.m = () => {manufacture(small_engine)};
-    automations.push(autoSmallEngineAssembler);
     upgrades.push(improvedManufacturing2)
     $('#small_engine-text').show();
 }};
