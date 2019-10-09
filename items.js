@@ -16,3 +16,10 @@ var items = {iron_ore:iron_ore,coal:coal,iron_bar:iron_bar,iron_plate:iron_plate
 var resources = ['iron_ore','coal','copper_ore'];
 var manufactured = ['copper_wire','iron_plate'];
 var assembled = ['iron_bulkhead','simple_circuit_board','small_engine'];
+
+var inventoryMaxVals = {
+    player:{iron_ore:20,coal:40,copper_ore:20,iron_bar:20,copper_bar:20,
+    copper_wire:50,iron_plate:20,iron_bulkhead:6,simple_circuit_board:15,small_engine:9},
+    furnace1:{iron_ore:5,coal:10},
+    furnace2:{copper_ore:5,coal:10}
+}

@@ -1,4 +1,7 @@
 var upgrades = [];
+
+let capacityUpgradeLevels = {resources:1,manufactured:1,assembly:1};
+
 let coalMining = {name:'Coal Mining',cost:40,bought:false,func(){
     produceKeyFuncs.s = mineCoal;
     $('#coal-text').show();
@@ -63,11 +66,56 @@ let improvedFurnaceLoading = {name:'Improved Furnace Loading',cost:200,bought:fa
     mults.moveMult += 1;
 }};
 
-let improvedResourceCapacity = {name:'Improved Resource Capacity',cost:60,bought:false,func(){
-    for (let i of resources)
-        inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
-    renderInventoryTable('player');
-}};
+let improvedResourceCapacity = function (){
+    upgrade = {};
+    upgrade.name = 'Improved Resource Capacity ' + toRomanNums(capacityUpgradeLevels.resources);
+    upgrade.cost = -28 + 58 * capacityUpgradeLevels.resources + 30 * Math.pow(capacityUpgradeLevels.resources,2);
+    upgrade.cost -= upgrade.cost % Math.pow(10,Math.max(parseInt(Math.log(upgrade.cost)/Math.log(10)-2),1));
+    upgrade.cost = parseInt(upgrade.cost);
+    upgrade.bought = false;
+    upgrade.func = () => {
+        for (let i of resources)
+            inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
+        renderInventoryTable('player');
+        resourceCapacityUnlock();
+        capacityUpgradeLevels.resources++;
+    }
+    return upgrade;
+};
+
+let improvedManufacturedCapacity = function (){
+    upgrade = {};
+    upgrade.name = 'Improved Manufactured Capacity ' + toRomanNums(capacityUpgradeLevels.manufactured);
+    upgrade.cost = 300 * capacityUpgradeLevels.manufactured + 45 * Math.pow(capacityUpgradeLevels.manufactured,2.1);
+    upgrade.cost -= upgrade.cost % Math.pow(10,Math.max(parseInt(Math.log(upgrade.cost)/Math.log(10)-2),1));
+    upgrade.cost = parseInt(upgrade.cost);
+    upgrade.bought = false;
+    upgrade.func = () => {
+        for (let i of manufactured)
+            inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
+        renderInventoryTable('player');
+        manufacturedCapacityUnlock();
+        capacityUpgradeLevels.manufactured++;
+    }
+    return upgrade;
+};
+
+let improvedAssemblyCapacity = function (){
+    upgrade = {};
+    upgrade.name = 'Improved Assembly Capacity ' + toRomanNums(capacityUpgradeLevels.assembly);
+    upgrade.cost = 800 * capacityUpgradeLevels.assembly + 60 * Math.pow(capacityUpgradeLevels.assembly,2.2);
+    upgrade.cost -= upgrade.cost % Math.pow(10,Math.max(parseInt(Math.log(upgrade.cost)/Math.log(10)-2),1));
+    upgrade.cost = parseInt(upgrade.cost);
+    upgrade.bought = false;
+    upgrade.func = () => {
+        for (let i of assembled)
+            inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
+        renderInventoryTable('player');
+        assemblyCapacityUnlock();
+        capacityUpgradeLevels.assembly++;
+    }
+    return upgrade;
+};
 
 let improvedFurnaceCapacity2 = {name:'Improved Furnace Capacity 2',cost:300,bought:false,func(){
     for (let i in inventoryMaxVals.furnace1)
@@ -146,38 +194,4 @@ let improvedAutoAssembly2 = {name:'Improved Auto Assembly 2',cost:200,bought:fal
 
 let improvedAssembly2 = {name:'Improved Assembly 2',cost:200,bought:false,func(){
     mults.assemblyMult += 1;
-}};
-
-let improvedResourceCapacity2 = {name:'Improved Resource Capacity 2',cost:600,bought:false,func(){
-    for (let i of resources)
-        inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
-    renderInventoryTable('player');
-}}
-
-let improvedManufacturingCapacity = {name:'Improved Manufacturing Capacity',cost:60,bought:false,func(){
-    let products = ['iron_bar','copper_bar','iron_plate','copper_wire']
-    for (let i of products)
-        inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
-    renderInventoryTable('player');
-}};
-
-let improvedManufacturingCapacity2 = {name:'Improved Manufacturing Capacity 2',cost:60,bought:false,func(){
-    let products = ['iron_bar','copper_bar','iron_plate','copper_wire']
-    for (let i of products)
-        inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
-    renderInventoryTable('player');
-}};
-
-let improvedAssemblyCapacity = {name:'Improved Assembly Capacity ',cost:60,bought:false,func(){
-    let products = ['iron_bulkhead','simple_circuit_board','small_engine'];
-    for (let i of products)
-        inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
-    renderInventoryTable('player');
-}};
-
-let improvedAssemblyCapacity2 = {name:'Improved Assembly Capacity 2',cost:60,bought:false,func(){
-    let products = ['iron_bulkhead','simple_circuit_board','small_engine'];
-    for (let i of products)
-        inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
-    renderInventoryTable('player');
 }};

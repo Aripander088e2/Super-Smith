@@ -54,65 +54,9 @@ unlocks.push(
 );
 
 unlocks.push(
-    unlock({iron_bar:7},
-    ()=>{
-        upgrades.push(improvedResourceCapacity);
-        $('#new-upgrade').show();
-    })
-);
-
-unlocks.push(
     unlock({copper_ore:8},
     ()=>{
         upgrades.push(copperForging);
-        $('#new-upgrade').show();
-    })
-);
-
-unlocks.push(
-    unlock({iron_ore:30},
-    ()=>{
-        upgrades.push(improvedResourceCapacity);
-        $('#new-upgrade').show();
-    })
-);
-
-unlocks.push(
-    unlock({iron_ore:60},
-    ()=>{
-        upgrades.push(improvedResourceCapacity2);
-        $('#new-upgrade').show();
-    })
-);
-
-unlocks.push(
-    unlock({iron_bar:20},
-    ()=>{
-        upgrades.push(improvedManufacturingCapacity);
-        $('#new-upgrade').show();
-    })
-);
-
-unlocks.push(
-    unlock({copper_bar:20},
-    ()=>{
-        upgrades.push(improvedManufacturingCapacity2);
-        $('#new-upgrade').show();
-    })
-);
-
-unlocks.push(
-    unlock({iron_bulkhead:6,copper_wire:50},
-    ()=>{
-        upgrades.push(improvedAssemblyCapacity);
-        $('#new-upgrade').show();
-    })
-);
-
-unlocks.push(
-    unlock({simple_circuit_board:2,small_engine:2},
-    ()=>{
-        upgrades.push(improvedAssemblyCapacity2);
         $('#new-upgrade').show();
     })
 );
@@ -184,6 +128,40 @@ unlocks.push(
         $('#new-upgrade').show();
     })
 );
+
+// ----- Capacity Upgrades -----
+let resourceCapacityUnlock = () => {
+    unlocks.push(
+        unlock({iron_ore:inventoryMaxVals.player.iron_ore * 3,copper_ore:inventoryMaxVals.player.copper_ore * 3,coal:inventoryMaxVals.player.coal * 3},
+        ()=>{
+            upgrades.push(improvedResourceCapacity());
+            $('#new-upgrade').show();
+        })
+    );
+}
+resourceCapacityUnlock();
+
+let manufacturedCapacityUnlock = () => {
+    unlocks.push(
+        unlock({iron_ore:inventoryMaxVals.player.iron_ore * 3,copper_ore:inventoryMaxVals.player.copper_ore * 3,coal:inventoryMaxVals.player.coal * 3},
+        ()=>{
+            upgrades.push(improvedManufacturedCapacity());
+            $('#new-upgrade').show();
+        })
+    );
+}
+manufacturedCapacityUnlock();
+
+let assemblyCapacityUnlock = () => {
+    unlocks.push(
+        unlock({iron_ore:inventoryMaxVals.player.iron_ore * 3,copper_ore:inventoryMaxVals.player.copper_ore * 3,coal:inventoryMaxVals.player.coal * 3},
+        ()=>{
+            upgrades.push(improvedAssemblyCapacity());
+            $('#new-upgrade').show();
+        })
+    );
+}
+assemblyCapacityUnlock();
 
 // ----- Automation Unlocks ----- 
 unlocks.push(

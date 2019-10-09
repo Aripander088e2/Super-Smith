@@ -23,7 +23,7 @@ var ships = {escape_pod:escape_pod};
 
 var totalProduced = {money:0};
 for (i in items)
-    totalProduced[i] = 0;
+    totalProduced[i] = 1000000000;
 
 for (i in ships) {
     totalProduced[i] = 0;
@@ -82,12 +82,6 @@ var masterKeyFuncs = {
 };
 
 var inventories = {player:{},furnace1:{},furnace2:{}};
-var inventoryMaxVals = {
-    player:{iron_ore:20,coal:40,copper_ore:20,iron_bar:20,copper_bar:20,
-    copper_wire:50,iron_plate:20,iron_bulkhead:6,simple_circuit_board:15,small_engine:9},
-    furnace1:{iron_ore:5,coal:10},
-    furnace2:{copper_ore:5,coal:10}
-}
 
 var smeltCooldown = [0,0];
 var maxSmeltCooldown = 60;
