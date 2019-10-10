@@ -206,7 +206,7 @@ function gameTick() {
     furnaceTick();
     autoMineTick();
     checkUnlocks();
-    if (shouldAutosave && currTick % 20 == 0) {
+    if (shouldAutosave && currTick % 100 == 0) {
         if (!window.sessionStorage.superSmithSaveId || saveId == JSON.parse(window.sessionStorage.superSmithSaveId))
             save();
         else {
@@ -460,6 +460,8 @@ function flash(element) {
 
 function save() {
     let save = {};
+    let saveString = ''
+    let encodedSave = [];
     window.sessionStorage.superSmithSaveId = JSON.stringify(saveId);
     save.mode = mode;
     save.money = money;
@@ -471,11 +473,30 @@ function save() {
     save.mults = mults;
     save.totalProduced = totalProduced;
     save.currTick = currTick;
-    window.sessionStorage.superSmith = JSON.stringify(save);
+    saveString = JSON.stringify(save);
+    encodedSave = encodeSave(saveString);
+    window.sessionStorage.superSmith = encodedSave;
+}
+
+function encodeSave(string) {
+    let encoded = '';
+    let saveSymbols = ['!','@','#','$','%','^','&','*','(',')'];
+    for (let i = 0; i < string.length; i++)
+        encoded += string.charCodeAt(i).toString(i % 33 + 2) + saveSymbols[parseInt(Math.random()*saveSymbols.length)];
+    return encoded;
+}
+
+function decodeSave(array) {
+    let save = '';
+    for (let i = 0; i < array.length; i++)
+        save += String.fromCharCode(parseInt(array[i],i % 33 + 2));
+    return save;
 }
 
 function load() {
-    let save = JSON.parse(window.sessionStorage.superSmith);
+    let baseSave = window.sessionStorage.superSmith.split(/[!@#$%^&*()]+/);
+    let decodedSave = decodeSave(baseSave);
+    let save = JSON.parse(decodedSave.substring(0,decodedSave.length-1));
     saveId = JSON.parse(window.sessionStorage.superSmithSaveId);
     shouldAutosave = true;
     money = save.money;
