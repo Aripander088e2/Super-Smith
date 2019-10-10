@@ -95,6 +95,8 @@ var maxSmeltCooldown = 60;
 let money = 0;
 
 $(document).keyup(function(e){
+    if (document.activeElement == document.getElementById('load-save-text'))
+        return;
     let keyFuncs = masterKeyFuncs[mode];
     if (symbols.indexOf(e.key) != -1)
         keyFuncs.num(symbols.indexOf(e.key) + 10)
@@ -197,6 +199,38 @@ function manufacture(item,auto = false) {
     }
     if (mode == 'shipyard')
         renderShipyard();
+}
+
+$('#settings-icon').click(toggleSettings);
+$('#settings-close-icon').click(toggleSettings);
+$('#export-save').click(exportSave);
+$('#load-save').click(loadSave);
+
+function toggleSettings() {
+    $('#settings-menu').toggle();
+}
+
+function exportSave() {
+    save();
+    const el = document.createElement('textarea');
+    el.value = window.sessionStorage.superSmith;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    $('#export-save').html('Save Text Copied To Clipboard');
+}
+
+function loadSave() {
+    if (!$('#load-save-text')[0].value)
+        alert('Paste save text into box')
+    else if (load($('#load-save-text')[0].value))
+        $('#load-save').html('Save Loaded')
+    else
+        alert('That doesn\'t look like a valid save.');
 }
 
 setInterval(gameTick,50);
@@ -480,23 +514,41 @@ function save() {
 
 function encodeSave(string) {
     let encoded = '';
+    let total = 0;
     let saveSymbols = ['!','@','#','$','%','^','&','*','(',')'];
-    for (let i = 0; i < string.length; i++)
+    for (let i = 0; i < string.length; i++) {
         encoded += string.charCodeAt(i).toString(i % 33 + 2) + saveSymbols[parseInt(Math.random()*saveSymbols.length)];
+        total += string.charCodeAt(i);
+    }
+    encoded += total.toString(16);
     return encoded;
 }
 
 function decodeSave(array) {
     let save = '';
-    for (let i = 0; i < array.length; i++)
-        save += String.fromCharCode(parseInt(array[i],i % 33 + 2));
-    return save;
+    let total = 0;
+    let curr;
+    for (let i = 0; i < array.length-1; i++) {
+        curr = parseInt(array[i],i % 33 + 2);
+        total += curr;
+        save += String.fromCharCode(curr);
+    }
+    if(array[array.length-1] == total.toString(16))
+        return save;
+    else
+        return false;
 }
 
-function load() {
-    let baseSave = window.sessionStorage.superSmith.split(/[!@#$%^&*()]+/);
+function load(string) {
+    let baseSave;
+    if (string)
+        baseSave = string.split(/[!@#$%^&*()]+/);
+    else
+        baseSave = window.sessionStorage.superSmith.split(/[!@#$%^&*()]+/);
     let decodedSave = decodeSave(baseSave);
-    let save = JSON.parse(decodedSave.substring(0,decodedSave.length-1));
+    if (decodedSave == false)
+        return false;
+    let save = JSON.parse(decodedSave);
     saveId = JSON.parse(window.sessionStorage.superSmithSaveId);
     shouldAutosave = true;
     money = save.money;
@@ -528,9 +580,5 @@ function load() {
     currTick = save.currTick;
     changeMode(save.mode);
     changeMoney(0);
-}
-
-function exportSave() {
-    save();
-    console.log(window.sessionStorage.superSmith)
+    return true;
 }
