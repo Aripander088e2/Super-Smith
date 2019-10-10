@@ -13,11 +13,11 @@ function checkUnlocks() {
     for (let i = 0; i < unlocks.length; i++) {
         requirementsMet = true;
         for (let j in unlocks[i].requirements)
-            if (unlocks[i].requirements[j] > totalProduced[j])
+            if (unlocks[i].bought || unlocks[i].requirements[j] > totalProduced[j])
                 requirementsMet = false;
         if (requirementsMet) {
             unlocks[i].func();
-            unlocks.splice(i,1);
+            unlocks[i].bought = true;
         }
     }
 }

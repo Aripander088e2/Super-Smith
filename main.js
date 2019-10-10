@@ -23,7 +23,7 @@ var ships = {escape_pod:escape_pod};
 
 var totalProduced = {money:0};
 for (i in items)
-    totalProduced[i] = 1000000000;
+    totalProduced[i] = 0;
 
 for (i in ships) {
     totalProduced[i] = 0;
@@ -444,9 +444,10 @@ function save() {
     save.inventories = inventories;
     save.inventoryMaxVals = inventoryMaxVals;
     save.upgrades = upgrades;
+    save.unlocks = unlocks;
     save.automations = automations;
     save.mults = mults;
-    console.log(upgrades,save.upgrades)
+    save.totalProduced = totalProduced;
     window.sessionStorage.superSmith = JSON.stringify(save);
 }
 
@@ -455,10 +456,29 @@ function load() {
     money = save.money;
     inventories = save.inventories;
     inventoryMaxVals = save.inventoryMaxVals;
-    upgrades = save.upgrades;
-    automations = save.automations;
+    for (let i = 0; i < save.unlocks.length; i++)
+        if(save.unlocks[i].bought) {
+            unlocks[i].func();
+            unlocks[i].bought = true;
+        }
+
+    // Used this instead of going by array position because ordering issue between states
+    for (let i of save.upgrades) {
+        for (let j of upgrades)
+            if (i.bought && i.name == j.name) {
+                j.func();
+                j.bought = true;
+            }
+    }
+    
+    for (let i = 0; i < save.automations.length; i++) {
+        automations[i].level = save.automations[i].level;
+        automations[i].cost = save.automations[i].cost;
+        automations[i].cooldown = save.automations[i].cooldown;
+        automations[i].maxCooldown = save.automations[i].maxCooldown;
+    }
     mults = save.mults;
-    console.log(upgrades,save.upgrades)
+    totalProduced = save.totalProduced;
     changeMode(save.mode);
     changeMoney(0);
 }
