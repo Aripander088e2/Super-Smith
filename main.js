@@ -18,6 +18,12 @@ var flashInterval, flashing;
 
 var sellText = true;
 
+var currTick = 0;
+
+let saveId = '' + Math.random()*10 + Math.random()*10;
+saveId = saveId.replace(/\./g,'');
+var shouldAutosave = true;
+
 var escape_pod = {name:'escape_pod',val:1000,recipe:{iron_bulkhead:2,small_engine:3,simple_circuit_board:5}};
 var ships = {escape_pod:escape_pod};
 
@@ -200,6 +206,21 @@ function gameTick() {
     furnaceTick();
     autoMineTick();
     checkUnlocks();
+    if (shouldAutosave && currTick % 20 == 0) {
+        if (!window.sessionStorage.superSmithSaveId || saveId == JSON.parse(window.sessionStorage.superSmithSaveId))
+            save();
+        else {
+            var r = confirm("Overwrite Existing Autosave File?");
+            if (r == true) {
+                shouldAutosave = true;
+                window.sessionStorage.superSmithSaveId = JSON.stringify(saveId);
+            }
+            else
+                shouldAutosave = false;
+            
+        }
+    }
+    currTick++;
 }
 
 function furnaceTick() {
@@ -439,6 +460,7 @@ function flash(element) {
 
 function save() {
     let save = {};
+    window.sessionStorage.superSmithSaveId = JSON.stringify(saveId);
     save.mode = mode;
     save.money = money;
     save.inventories = inventories;
@@ -448,11 +470,14 @@ function save() {
     save.automations = automations;
     save.mults = mults;
     save.totalProduced = totalProduced;
+    save.currTick = currTick;
     window.sessionStorage.superSmith = JSON.stringify(save);
 }
 
 function load() {
     let save = JSON.parse(window.sessionStorage.superSmith);
+    saveId = JSON.parse(window.sessionStorage.superSmithSaveId);
+    shouldAutosave = true;
     money = save.money;
     inventories = save.inventories;
     inventoryMaxVals = save.inventoryMaxVals;
@@ -479,6 +504,12 @@ function load() {
     }
     mults = save.mults;
     totalProduced = save.totalProduced;
+    currTick = save.currTick;
     changeMode(save.mode);
     changeMoney(0);
+}
+
+function exportSave() {
+    save();
+    console.log(window.sessionStorage.superSmith)
 }
