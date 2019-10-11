@@ -193,14 +193,14 @@ unlocks.push(
 );
 
 unlocks.push(
-    unlock({iron_bar:30,copper_bar:20},
+    unlock({iron_bar:30},
     ()=>{
         upgrades.push(automaticCoalLoading);
     })
 );
 
 unlocks.push(
-    unlock({iron_bar:60},
+    unlock({iron_bar:80},
     ()=>{
         upgrades.push(automaticIronLoading)
     })
