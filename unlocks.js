@@ -1,4 +1,4 @@
-let unlocks = [];
+var unlocks = [];
 
 function unlock(requirements,func) {
     let newUnlock = {};
@@ -73,6 +73,14 @@ unlocks.push(
     unlock({copper_bar:50},
     ()=>{
         upgrades.push(improvedFurnaceSpeed3);
+        $('#new-upgrade').show();
+    })
+);
+
+unlocks.push(
+    unlock({iron_bar:250,copper_bar:250},
+    ()=>{
+        upgrades.push(improvedFurnaceSpeed4);
         $('#new-upgrade').show();
     })
 );
@@ -169,42 +177,6 @@ unlocks.push(
     })
 );
 
-// ----- Capacity Upgrades -----
-let resourceCapacityUnlock = () => {
-    unlocks.push(
-        unlock({iron_ore:inventoryMaxVals.player.iron_ore * 3,
-            copper_ore:(typeof copperMining != 'undefined' && copperMining.bought ? inventoryMaxVals.player.copper_ore * 3 : 0),
-            coal:inventoryMaxVals.player.coal * 3},
-        ()=>{
-            upgrades.push(improvedResourceCapacity());
-            $('#new-upgrade').show();
-        })
-    );
-}
-resourceCapacityUnlock();
-
-let manufacturedCapacityUnlock = () => {
-    unlocks.push(
-        unlock({iron_ore:inventoryMaxVals.player.iron_ore * 3,copper_ore:inventoryMaxVals.player.copper_ore * 3,coal:inventoryMaxVals.player.coal * 3},
-        ()=>{
-            upgrades.push(improvedManufacturedCapacity());
-            $('#new-upgrade').show();
-        })
-    );
-}
-manufacturedCapacityUnlock();
-
-let assemblyCapacityUnlock = () => {
-    unlocks.push(
-        unlock({iron_ore:inventoryMaxVals.player.iron_ore * 3,copper_ore:inventoryMaxVals.player.copper_ore * 3,coal:inventoryMaxVals.player.coal * 3},
-        ()=>{
-            upgrades.push(improvedAssemblyCapacity());
-            $('#new-upgrade').show();
-        })
-    );
-}
-assemblyCapacityUnlock();
-
 // ----- Automation Unlocks ----- 
 unlocks.push(
     unlock({iron_bar:40},
@@ -249,28 +221,28 @@ unlocks.push(
 );
 
 unlocks.push(
-    unlock({copper_wire:500},
+    unlock({copper_wire:80},
     ()=>{
         upgrades.push(automaticCopperWireMaking);
     })
 );
 
 unlocks.push(
-    unlock({iron_bulkhead:70},
+    unlock({iron_bulkhead:30},
     ()=>{
         upgrades.push(automaticIronBulkheadAssembly);
     })
 );
 
 unlocks.push(
-    unlock({simple_circuit_board:80},
+    unlock({simple_circuit_board:30},
     ()=>{
         upgrades.push(automaticSimpleCircuitBoardAssembly);
     })
 );
 
 unlocks.push(
-    unlock({small_engine:100},
+    unlock({small_engine:30},
     ()=>{
         upgrades.push(automaticSmallEngineAssembly);
     })

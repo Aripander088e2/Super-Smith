@@ -575,11 +575,17 @@ function load(string) {
         if(save.unlocks[i].bought) {
             unlocks[i].func();
             unlocks[i].bought = true;
+            if (unlocks[i].upgrade)
+                for (let j of save.upgrades)
+                    if (j.bought && !unlocks[i].upgrade.bought) {
+                        unlocks[i].upgrade.func()
+                        unlocks[i].upgrade.bought = true;
+                    }
         }
     // Used this instead of going by array position because ordering issue between states
     for (let i of save.upgrades) {
         for (let j of upgrades)
-            if (i.bought && i.name == j.name) {
+            if (i.bought && !j.bought && i.name == j.name) {
                 j.func();
                 j.bought = true;
             }
