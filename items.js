@@ -6,8 +6,8 @@ var copper_bar = {name:'copper_bar',val:40};
 var copper_wire = {name:'copper_wire',val:11,recipe:{copper_bar:1},output:5};
 var iron_plate = {name:'iron_plate',val: 25, recipe:{iron_bar:1}};
 var iron_bulkhead = {name:'iron_bulkhead',val:200,recipe:{iron_plate:5}};
-var simple_circuit_board = {name:'simple_circuit_board',val:275,recipe:{copper_wire:15,iron_bar:2}};
-var small_engine = {name:'small_engine',val:325,recipe:{copper_wire:10,copper_bar:2,iron_bar:3}};
+var simple_circuit_board = {name:'simple_circuit_board',val:375,recipe:{copper_wire:15,iron_bar:2}};
+var small_engine = {name:'small_engine',val:450,recipe:{copper_wire:10,copper_bar:2,iron_bar:3}};
 
 var items = {iron_ore:iron_ore,coal:coal,iron_bar:iron_bar,iron_plate:iron_plate,iron_bulkhead:iron_bulkhead,
     copper_ore:copper_ore,copper_bar:copper_bar,copper_wire:copper_wire,

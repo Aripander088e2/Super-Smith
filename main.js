@@ -68,7 +68,7 @@ var modeDict = {
     'sell':{id:'sell-items',text:'Sell Items',key:'o',
         show:[]
     },
-    'upgrade':{id:'upgrade',text:'Buy Upgrades',key:'p',
+    'upgrade':{id:'upgrade',text:'Buy Upgrades',key:'p',addon:'<span id="new-upgrade">New</span>',
         show:['upgrade-container']
     },
     'automation':{id:'automation',text:'Automation',key:'u',
@@ -134,7 +134,6 @@ function ironToFurnace() {
 }
 
 function canAfford(item,givenInv,amount) {
-    console.log(item,amount)
     let inv = inventories[givenInv];
     let result = true
     let index;
@@ -189,7 +188,7 @@ function manufacture(item,auto = false) {
         mult = (auto ? 'autoManufacturingMult' : 'manufacturingMult')
     else if (assembled.indexOf(item.name) != -1)
         mult = (auto ? 'autoAssemblyMult' : 'assemblyMult')
-    amount = Math.min(mults[mult],inventoryMaxVals['player'][item.name] - inventories['player'][item.name]);
+    amount = Math.min(mults[mult],inventoryMaxVals['player'][item.name] - (inventories['player'][item.name] ? inventories['player'][item.name] : 0) );
     if (canAfford(item.recipe,'player',amount)) {
         removeRecipe(item,'player',amount);
         addItem(item,'player',amount * (item.output != undefined ? item.output : 1));
@@ -208,6 +207,8 @@ $('#load-save').click(loadSave);
 
 function toggleSettings() {
     $('#settings-menu').toggle();
+    $('#export-save').html('Export Save As Text');
+    $('#load-save').html('Load Save From Text')
 }
 
 function exportSave() {
@@ -296,6 +297,8 @@ function addItem(item,invName,amount = 1) {
 
 function sellItem(num) {
     let item = Object.keys(inventories['player'])[num - 1];
+    if (item == undefined)
+        return;
     let amount = inventories['player'][items[item].name];
     if (sellText)
         sellText = false;
@@ -361,7 +364,10 @@ function renderInventoryTable(invName) {
         if (mode == 'sell' && invName == 'player') {
             table += '<td> x $' + items[i].val + '</td>';
             table += '<td> = $' + items[i].val * inventories[invName][i] + '</td>';
-            table +=  '<td> [' + (sellText ? 'Press ' : '') + count + ']</td>';
+            if (count < 10)
+                table +=  '<td> [' + (sellText ? 'Press ' : '') + count + ']</td>';
+            else
+                table +=  '<td> [' + (sellText ? 'Press ' : '') + sybols[count] + ']</td>';
         }
         else if (invName == 'player'){
             curr = automations.filter(auto => auto.resource == items[i] && auto.type != 'loader')[0];
@@ -454,10 +460,14 @@ function changeMode(given) {
         $('#' + i).hide();
     for (let i of modeDict[given].show)
         $('#' + i).show();
-    $('#' + modeDict[mode].id).html(modeDict[mode].text + ' [' + modeDict[mode].key + ']')
-    mode = given;
-    if (given == 'upgrade') {
+    $('#' + modeDict[mode].id).html(modeDict[mode].text + ' [' + modeDict[mode].key + ']' + ' ' + (modeDict[mode].addon ? modeDict[mode].addon : ''))
+
+    if (mode == 'upgrade')
         $('#new-upgrade').hide();
+
+    mode = given;
+
+    if (given == 'upgrade') {
         renderUpgradeTable();
     }
     else if (given == 'automation')
@@ -559,7 +569,6 @@ function load(string) {
             unlocks[i].func();
             unlocks[i].bought = true;
         }
-
     // Used this instead of going by array position because ordering issue between states
     for (let i of save.upgrades) {
         for (let j of upgrades)
@@ -569,6 +578,7 @@ function load(string) {
             }
     }
     
+    console.log(save.automations,automations);
     for (let i = 0; i < save.automations.length; i++) {
         automations[i].level = save.automations[i].level;
         automations[i].cost = save.automations[i].cost;

@@ -45,10 +45,26 @@ unlocks.push(
 );
 
 unlocks.push(
-    unlock({coal:10},
+    unlock({iron_bar:5},
     ()=>{
         upgrades.push(improvedFurnaceSpeed);
         upgrades.push(automatedCoalMining);
+        $('#new-upgrade').show();
+    })
+);
+
+unlocks.push(
+    unlock({iron_bar:40},
+    ()=>{
+        upgrades.push(improvedFurnaceSpeed2);
+        $('#new-upgrade').show();
+    })
+);
+
+unlocks.push(
+    unlock({copper_bar:50},
+    ()=>{
+        upgrades.push(improvedFurnaceSpeed3);
         $('#new-upgrade').show();
     })
 );
@@ -89,7 +105,7 @@ unlocks.push(
 
 // -----  Manufacturing Upgrades ----- 
 unlocks.push(
-    unlock({iron_bar:12},
+    unlock({iron_bar:20},
     ()=>{
         upgrades.push(ironPlateManufacturing);
         $('#new-upgrade').show();
@@ -100,6 +116,14 @@ unlocks.push(
     unlock({copper_bar:8},
     ()=>{
         upgrades.push(copperWireManufacturing);
+        $('#new-upgrade').show();
+    })
+);
+
+unlocks.push(
+    unlock({copper_bar:20},
+    ()=>{
+        upgrades.push(improvedCopperMining);
         $('#new-upgrade').show();
     })
 );
@@ -129,10 +153,20 @@ unlocks.push(
     })
 );
 
+unlocks.push(
+    unlock({iron_plate:15},
+    ()=>{
+        upgrades.push(copperMining);
+        $('#new-upgrade').show();
+    })
+);
+
 // ----- Capacity Upgrades -----
 let resourceCapacityUnlock = () => {
     unlocks.push(
-        unlock({iron_ore:inventoryMaxVals.player.iron_ore * 3,copper_ore:inventoryMaxVals.player.copper_ore * 3,coal:inventoryMaxVals.player.coal * 3},
+        unlock({iron_ore:inventoryMaxVals.player.iron_ore * 3,
+            copper_ore:(typeof copperMining != 'undefined' && copperMining.bought ? inventoryMaxVals.player.copper_ore * 3 : 0),
+            coal:inventoryMaxVals.player.coal * 3},
         ()=>{
             upgrades.push(improvedResourceCapacity());
             $('#new-upgrade').show();
@@ -165,21 +199,21 @@ assemblyCapacityUnlock();
 
 // ----- Automation Unlocks ----- 
 unlocks.push(
-    unlock({iron_ore:40},
+    unlock({iron_bar:40},
     ()=>{
         automations.push(autoIronMiner);
     })
 );
 
 unlocks.push(
-    unlock({copper_ore:30},
+    unlock({copper_bar:30},
     ()=>{
         automations.push(autoCopperMiner);
     })
 );
 
 unlocks.push(
-    unlock({iron_bar:30,copper_bar:10},
+    unlock({iron_bar:30,copper_bar:20},
     ()=>{
         automations.push(autoCoalLoader);
     })
@@ -200,35 +234,35 @@ unlocks.push(
 );
 
 unlocks.push(
-    unlock({iron_plate:20},
+    unlock({iron_plate:40},
     ()=>{
         automations.push(autoIronPlateMaker);
     })
 );
 
 unlocks.push(
-    unlock({copper_wire:100},
+    unlock({copper_wire:300},
     ()=>{
         automations.push(autoCopperWireMaker);
     })
 );
 
 unlocks.push(
-    unlock({iron_bulkhead:10},
+    unlock({iron_bulkhead:15},
     ()=>{
         automations.push(autoIronBulkheadAssembler);
     })
 );
 
 unlocks.push(
-    unlock({simple_circuit_board:10},
+    unlock({simple_circuit_board:15},
     ()=>{
         automations.push(autoSimpleCircuitBoardAssembler);
     })
 );
 
 unlocks.push(
-    unlock({small_engine:10},
+    unlock({small_engine:15},
     ()=>{
         automations.push(autoSmallEngineAssembler);
     })
