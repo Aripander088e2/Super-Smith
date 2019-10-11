@@ -36,6 +36,14 @@ unlocks.push(
 );
 
 unlocks.push(
+    unlock({iron_bulkhead:1,simple_circuit_board:1,small_engine:1},
+    ()=>{ 
+        $('#shipyard').fadeIn(500);
+        universalKeyFuncs.y = () => {return changeMode('shipyard')};
+    })
+)
+
+unlocks.push(
     unlock({money:25},
     ()=>{ 
         upgrades.push(coalMining);
@@ -85,7 +93,7 @@ unlocks.push(
     })
 );
 
-unlocks.push(
+/*unlocks.push(
     unlock({escape_pod:1},
     ()=>{
         upgrades.push(improvedAssembly2);
@@ -101,7 +109,7 @@ unlocks.push(
         upgrades.push(improvedAutoAssembly2);
         $('#new-upgrade').show();
     })
-);
+);*/
 
 // -----  Manufacturing Upgrades ----- 
 unlocks.push(
@@ -146,7 +154,7 @@ unlocks.push(
 );
 
 unlocks.push(
-    unlock({copper_wire:80,iron_bar:20,copper_bar:20},
+    unlock({simple_circuit_board:20},
     ()=>{
         upgrades.push(smallEngineAssembly);
         $('#new-upgrade').show();
@@ -201,69 +209,69 @@ assemblyCapacityUnlock();
 unlocks.push(
     unlock({iron_bar:40},
     ()=>{
-        automations.push(autoIronMiner);
+        upgrades.push(automatedIronMining);
     })
 );
 
 unlocks.push(
     unlock({copper_bar:30},
     ()=>{
-        automations.push(autoCopperMiner);
+        upgrades.push(automatedCopperMining);
     })
 );
 
 unlocks.push(
     unlock({iron_bar:30,copper_bar:20},
     ()=>{
-        automations.push(autoCoalLoader);
+        upgrades.push(automaticCoalLoading);
     })
 );
 
 unlocks.push(
     unlock({iron_bar:60},
     ()=>{
-        automations.push(autoIronLoader);
+        upgrades.push(automaticIronLoading)
     })
 );
 
 unlocks.push(
     unlock({copper_bar:40},
     ()=>{
-        automations.push(autoCopperLoader);
+        upgrades.push(automaticCopperLoading);
     })
 );
 
 unlocks.push(
-    unlock({iron_plate:40},
+    unlock({iron_plate:80},
     ()=>{
-        automations.push(autoIronPlateMaker);
+        upgrades.push(automaticIronPlateMaking);
     })
 );
 
 unlocks.push(
-    unlock({copper_wire:300},
+    unlock({copper_wire:500},
     ()=>{
-        automations.push(autoCopperWireMaker);
+        upgrades.push(automaticCopperWireMaking);
     })
 );
 
 unlocks.push(
-    unlock({iron_bulkhead:15},
+    unlock({iron_bulkhead:70},
     ()=>{
-        automations.push(autoIronBulkheadAssembler);
+        upgrades.push(automaticIronBulkheadAssembly);
     })
 );
 
 unlocks.push(
-    unlock({simple_circuit_board:15},
+    unlock({simple_circuit_board:80},
     ()=>{
-        automations.push(autoSimpleCircuitBoardAssembler);
+        upgrades.push(automaticSimpleCircuitBoardAssembly);
     })
 );
 
 unlocks.push(
-    unlock({small_engine:15},
+    unlock({small_engine:100},
     ()=>{
-        automations.push(autoSmallEngineAssembler);
+        upgrades.push(automaticSmallEngineAssembly);
     })
 );

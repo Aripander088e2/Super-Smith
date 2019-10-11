@@ -14,6 +14,8 @@ mults.autoManufacturingMult = 1;
 mults.assemblyMult = 1;
 mults.autoAssemblyMult = 1;
 
+mults.base = 1;
+
 var flashInterval, flashing;
 
 var sellText = true;
@@ -23,9 +25,6 @@ var currTick = 0;
 let saveId = '' + Math.random()*10 + Math.random()*10;
 saveId = saveId.replace(/\./g,'');
 var shouldAutosave = true;
-
-var escape_pod = {name:'escape_pod',val:1000,recipe:{iron_bulkhead:2,small_engine:3,simple_circuit_board:5}};
-var ships = {escape_pod:escape_pod};
 
 var totalProduced = {money:0};
 for (i in items)
@@ -57,8 +56,7 @@ var shipyardKeyFuncs = {
 }
 
 var universalKeyFuncs = {
-    'i':() => {return changeMode('produce')},
-    'y':() => {return changeMode('shipyard')},
+    'i':() => {return changeMode('produce')}
 }
 
 var modeDict = {
@@ -74,7 +72,7 @@ var modeDict = {
     'automation':{id:'automation',text:'Automation',key:'u',
         show:['automation-container']
     },
-    'shipyard':{id:'shipyard',text:'Shipyard',key:'u',
+    'shipyard':{id:'shipyard',text:'Shipyard',key:'y',
         show:['shipyard-container']
     }
 }
@@ -188,7 +186,12 @@ function manufacture(item,auto = false) {
         mult = (auto ? 'autoManufacturingMult' : 'manufacturingMult')
     else if (assembled.indexOf(item.name) != -1)
         mult = (auto ? 'autoAssemblyMult' : 'assemblyMult')
+    else
+        mult = 'base';
     amount = Math.min(mults[mult],inventoryMaxVals['player'][item.name] - (inventories['player'][item.name] ? inventories['player'][item.name] : 0) );
+    console.log(item,amount)
+    console.log(mults[mult])
+    console.log(inventoryMaxVals['player'][item.name],item.name)
     if (canAfford(item.recipe,'player',amount)) {
         removeRecipe(item,'player',amount);
         addItem(item,'player',amount * (item.output != undefined ? item.output : 1));
@@ -367,7 +370,7 @@ function renderInventoryTable(invName) {
             if (count < 10)
                 table +=  '<td> [' + (sellText ? 'Press ' : '') + count + ']</td>';
             else
-                table +=  '<td> [' + (sellText ? 'Press ' : '') + sybols[count] + ']</td>';
+                table +=  '<td> [' + (sellText ? 'Press ' : '') + symbols[count - 10] + ']</td>';
         }
         else if (invName == 'player'){
             curr = automations.filter(auto => auto.resource == items[i] && auto.type != 'loader')[0];
@@ -397,10 +400,13 @@ function renderUpgradeTable() {
     let count = 1;
     for (let i of upgrades) {
         if (!i.bought && count <= 9) {
-            table += '<tr>';
+            if (count % 2 == 1)
+                table += '<tr>';
             table += '<td class="border-container center"><p>' + i.name + '</p>';
             table += '<p>$' + i.cost + ' [' + count + ']</p>';
-            table += '</p></tr>';
+            table += '</p>';
+            if (count % 2 == 0)
+                table += '</tr>';
             count++;
         }
     }
@@ -564,6 +570,7 @@ function load(string) {
     money = save.money;
     inventories = save.inventories;
     inventoryMaxVals = save.inventoryMaxVals;
+    console.log(unlocks,save.unlocks)   
     for (let i = 0; i < save.unlocks.length; i++)
         if(save.unlocks[i].bought) {
             unlocks[i].func();

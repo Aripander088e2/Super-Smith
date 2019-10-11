@@ -123,7 +123,7 @@ li {
     border-spacing:0 1em;
 }
 
-#automation-table, .shipyard-table {
+#automation-table, .shipyard-table, #upgrade-table {
     border-collapse: separate;
     border-spacing: 2em 1em;
 }

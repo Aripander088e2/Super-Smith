@@ -56,11 +56,6 @@ let improvedIronMining = {name:'Improved Iron Mining',cost:350,bought:false,func
     mults.ironMineMult += 1;
 }};
 
-let automatedCoalMining = {name:'Automated Coal Mining',cost:250,bought:false,func(){
-    $('#automation').show();
-    universalKeyFuncs.u = () => {return changeMode('automation')};
-}};
-
 let copperMining = {name:'Copper Mining',cost:400,bought:false,func(){
     produceKeyFuncs.d = mineCopper;
     $('#copper_ore-text').show();
@@ -69,6 +64,132 @@ let copperMining = {name:'Copper Mining',cost:400,bought:false,func(){
 let improvedFurnaceLoading = {name:'Improved Furnace Loading',cost:200,bought:false,func(){
     mults.moveMult += 1;
 }};
+
+let improvedFurnaceCapacity2 = {name:'Improved Furnace Capacity 2',cost:700,bought:false,func(){
+    for (let i in inventoryMaxVals.furnace1)
+        inventoryMaxVals.furnace1[i] = Math.ceil(inventoryMaxVals.furnace1[i] * 1.5);
+    for (let i in inventoryMaxVals.furnace2)
+        inventoryMaxVals.furnace2[i] = Math.ceil(inventoryMaxVals.furnace2[i] * 1.5);
+}};
+
+let improvedCopperMining = {name:'Improved Copper Mining',cost:60,bought:false,func(){
+    mults.copperMineMult += 1;
+}};
+
+let improvedAutoMiners = {name:'Improved Auto Miners',cost:750,bought:false,func(){
+    mults.autoMineMult++;
+    renderInventoryTable('player');
+}};
+
+let improvedAutoMiners2 = {name:'Improved Auto Miners 2',cost:2000,bought:false,func(){
+    mults.autoMineMult++;
+    renderInventoryTable('player');
+}};
+
+let ironPlateManufacturing = {name:'Iron Plate Manufacturing',cost:300,bought:false,func(){
+    produceKeyFuncs.z = () => {manufacture(iron_plate)};
+    $('#iron_plate-text').show();
+}};
+
+let copperWireManufacturing = {name:'Copper Wire Manufacturing',cost:700,bought:false,func(){
+    produceKeyFuncs.x = () => {manufacture(copper_wire)};
+    upgrades.push(improvedFurnaceCapacity2);
+    $('#copper_wire-text').show();
+}};
+
+let ironBulkheadAssembly = {name:'Iron Bulkhead Assembly',cost:600,bought:false,func(){
+    produceKeyFuncs.b = () => {manufacture(iron_bulkhead)};
+    //upgrades.push(improvedManufacturing);
+    $('#iron_bulkhead-text').show();
+}};
+
+let simpleCircuitBoardAssembly = {name:'Simple Circuit Board Assembly',cost:1200,bought:false,func(){
+    produceKeyFuncs.n = () => {manufacture(simple_circuit_board)};
+    $('#simple_circuit_board-text').show();
+    upgrades.push(improvedFurnaceSpeed2);
+}};
+
+let smallEngineAssembly = {name:'Small Engine Assembly',cost:2500,bought:false,func(){
+    produceKeyFuncs.m = () => {manufacture(small_engine)};
+    //upgrades.push(improvedManufacturing2)
+    $('#small_engine-text').show();
+}};
+
+let improvedManufacturing = {name:'Improved Manufacturing',cost:800,bought:false,func(){
+    mults.manufacturingMult += 1;
+}};
+
+let improvedManufacturing2 = {name:'Improved Manufacturing II',cost:200,bought:false,func(){
+    mults.manufacturingMult += 1;
+}};
+
+let improvedAutoManufacturing = {name:'Improved Auto Manufacturing',cost:200,bought:false,func(){
+    mults.autoManufacturingMult += 1;
+}};
+
+let improvedAutoAssembly = {name:'Improved Auto Assembly',cost:200,bought:false,func(){
+    mults.autoAssemblyMult += 1;
+}};
+
+let improvedAssembly = {name:'Improved Assembly',cost:200,bought:false,func(){
+    mults.assemblyMult += 1;
+}};
+
+let improvedAutoAssembly2 = {name:'Improved Auto Assembly 2',cost:200,bought:false,func(){
+    mults.autoAssemblyMult += 1;
+}};
+
+let improvedAssembly2 = {name:'Improved Assembly 2',cost:200,bought:false,func(){
+    mults.assemblyMult += 1;
+}};
+
+// Automation Unlock Upgrades 
+let automatedCoalMining = {name:'Automated Coal Mining',cost:250,bought:false,func(){
+    $('#automation').show();
+    universalKeyFuncs.u = () => {return changeMode('automation')};
+}};
+
+let automatedIronMining = {name:'Automated Iron Mining',cost:350,bought:false,func(){
+    automations.push(autoIronMiner);
+}};
+
+let automatedCopperMining = {name:'Automated Copper Mining',cost:550,bought:false,func(){
+    automations.push(autoCopperMiner);
+}};
+
+let automaticCoalLoading = {name:'Automated Coal Loading',cost:700,bought:false,func(){
+    automations.push(autoCoalLoader);
+}};
+
+let automaticIronLoading = {name:'Automated Iron Loading',cost:900,bought:false,func(){
+    automations.push(autoIronLoader);
+}};
+
+let automaticCopperLoading = {name:'Automated Copper Loading',cost:1100,bought:false,func(){
+    automations.push(autoCopperLoader);
+}};
+
+let automaticIronPlateMaking = {name:'Automated Iron Plate Manufacturing',cost:1500,bought:false,func(){
+    automations.push(autoIronPlateMaker);
+}};
+
+let automaticCopperWireMaking = {name:'Automated Copper Wire Manufacturing',cost:1800,bought:false,func(){
+    automations.push(autoCopperWireMaker);
+}};
+
+let automaticIronBulkheadAssembly = {name:'Automated Iron Bulkhead Assembly',cost:3000,bought:false,func(){
+    automations.push(autoIronBulkheadAssembler);
+}};
+
+let automaticSimpleCircuitBoardAssembly = {name:'Automated Simple Circuit Board Assembly',cost:3500,bought:false,func(){
+    automations.push(autoSimpleCircuitBoardAssembler);
+}};
+
+let automaticSmallEngineAssembly = {name:'Automated Small Engine Assembly',cost:4000,bought:false,func(){
+    automations.push(autoSmallEngineAssembler);
+}};
+
+// Capacity Upgrades (scaling)
 
 let improvedResourceCapacity = function (){
     upgrade = {};
@@ -81,8 +202,8 @@ let improvedResourceCapacity = function (){
         for (let i of resources)
             inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
         renderInventoryTable('player');
-        resourceCapacityUnlock();
         capacityUpgradeLevels.resources++;
+        resourceCapacityUnlock();
     }
     return upgrade;
 };
@@ -120,81 +241,3 @@ let improvedAssemblyCapacity = function (){
     }
     return upgrade;
 };
-
-let improvedFurnaceCapacity2 = {name:'Improved Furnace Capacity 2',cost:300,bought:false,func(){
-    for (let i in inventoryMaxVals.furnace1)
-        inventoryMaxVals.furnace1[i] = Math.ceil(inventoryMaxVals.furnace1[i] * 1.5);
-    for (let i in inventoryMaxVals.furnace2)
-        inventoryMaxVals.furnace2[i] = Math.ceil(inventoryMaxVals.furnace2[i] * 1.5);
-}};
-
-let improvedCopperMining = {name:'Improved Copper Mining',cost:50,bought:false,func(){
-    mults.copperMineMult += 1;
-}};
-
-let improvedAutoMiners = {name:'Improved Auto Miners',cost:500,bought:false,func(){
-    mults.autoMineMult++;
-    renderInventoryTable('player');
-}};
-
-let improvedAutoMiners2 = {name:'Improved Auto Miners 2',cost:2000,bought:false,func(){
-    mults.autoMineMult++;
-    renderInventoryTable('player');
-}};
-
-let ironPlateManufacturing = {name:'Iron Plate Manufacturing',cost:300,bought:false,func(){
-    produceKeyFuncs.z = () => {manufacture(iron_plate)};
-    $('#iron_plate-text').show();
-}};
-
-let copperWireManufacturing = {name:'Copper Wire Manufacturing',cost:700,bought:false,func(){
-    produceKeyFuncs.x = () => {manufacture(copper_wire)};
-    upgrades.push(improvedFurnaceCapacity2);
-    $('#copper_wire-text').show();
-}};
-
-let ironBulkheadAssembly = {name:'Iron Bulkhead Assembly',cost:600,bought:false,func(){
-    produceKeyFuncs.b = () => {manufacture(iron_bulkhead)};
-    upgrades.push(improvedManufacturing);
-    $('#iron_bulkhead-text').show();
-}};
-
-let simpleCircuitBoardAssembly = {name:'Simple Circuit Board Assembly',cost:1200,bought:false,func(){
-    produceKeyFuncs.n = () => {manufacture(simple_circuit_board)};
-    $('#simple_circuit_board-text').show();
-    upgrades.push(improvedFurnaceSpeed2);
-}};
-
-let smallEngineAssembly = {name:'Small Engine Assembly',cost:2500,bought:false,func(){
-    produceKeyFuncs.m = () => {manufacture(small_engine)};
-    upgrades.push(improvedManufacturing2)
-    $('#small_engine-text').show();
-}};
-
-let improvedManufacturing = {name:'Improved Manufacturing',cost:800,bought:false,func(){
-    mults.manufacturingMult += 1;
-}};
-
-let improvedManufacturing2 = {name:'Improved Manufacturing II',cost:200,bought:false,func(){
-    mults.manufacturingMult += 1;
-}};
-
-let improvedAutoManufacturing = {name:'Improved Auto Manufacturing',cost:200,bought:false,func(){
-    mults.autoManufacturingMult += 1;
-}};
-
-let improvedAutoAssembly = {name:'Improved Auto Assembly',cost:200,bought:false,func(){
-    mults.autoAssemblyMult += 1;
-}};
-
-let improvedAssembly = {name:'Improved Assembly',cost:200,bought:false,func(){
-    mults.assemblyMult += 1;
-}};
-
-let improvedAutoAssembly2 = {name:'Improved Auto Assembly 2',cost:200,bought:false,func(){
-    mults.autoAssemblyMult += 1;
-}};
-
-let improvedAssembly2 = {name:'Improved Assembly 2',cost:200,bought:false,func(){
-    mults.assemblyMult += 1;
-}};
