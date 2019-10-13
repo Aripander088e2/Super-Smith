@@ -85,7 +85,9 @@ var masterKeyFuncs = {
     shipyard:shipyardKeyFuncs
 };
 
-var inventories = {player:{},furnace1:{},furnace2:{}};
+var inventories = {player:{},
+furnace1:{iron_ore:0,coal:0},
+furnace2:{copper_ore:0,coal:0}};
 
 var smeltCooldown = [0,0];
 var maxSmeltCooldown = 60;
@@ -122,13 +124,12 @@ function mineCoal() {
 }
 
 function ironToFurnace() {
-    let amount = 1 * mults.moveMult;
     let max = inventoryMaxVals['furnace1'].iron_ore;
-    if (!inventories['furnace1'].iron_ore || inventories['furnace1'].iron_ore < max)
-        if (canAfford(iron_ore,'player',amount)) {
-            removeItem(iron_ore,'player',amount);
-            addItem(iron_ore,'furnace1',amount);
-        }
+    let amount = Math.min(1 * mults.moveMult,max - inventories['furnace1'].iron_ore,inventories['player'].iron_ore);
+    if (canAfford(iron_ore,'player',amount)) {
+        removeItem(iron_ore,'player',amount);
+        addItem(iron_ore,'furnace1',amount);
+    }
 }
 
 function canAfford(item,givenInv,amount) {
@@ -160,23 +161,21 @@ function canAfford(item,givenInv,amount) {
 }
 
 function coalToFurnace(num) {
-    let amount = 1 * mults.moveMult;
     let max = inventoryMaxVals['furnace' + num].coal;
-    if (!inventories['furnace' + num].coal || inventories['furnace' + num].coal < max)
-        if (canAfford(coal,'player',amount)) {
-            removeItem(coal,'player',amount);
-            addItem(coal,'furnace' + num,amount);
-        }
+    let amount = Math.min(1 * mults.moveMult,max - inventories['furnace' + num].coal,inventories['player'].coal);
+    if (canAfford(coal,'player',amount)) {
+        removeItem(coal,'player',amount);
+        addItem(coal,'furnace' + num,amount);
+    }
 }
 
 function copperToFurnace() {
-    let amount = 1 * mults.moveMult;
     let max = inventoryMaxVals['furnace2'].copper_ore;
-    if (!inventories['furnace2'].copper_ore || inventories['furnace2'].copper_ore < max)
-        if (canAfford(copper_ore,'player',amount)) {
-            removeItem(copper_ore,'player',amount);
-            addItem(copper_ore,'furnace2',amount);
-        }
+    let amount = Math.min(1 * mults.moveMult,max - inventories['furnace2'].copper_ore,inventories['player'].copper_ore);
+    if (canAfford(copper_ore,'player',amount)) {
+        removeItem(copper_ore,'player',amount);
+        addItem(copper_ore,'furnace2',amount);
+    }
 }
 
 function manufacture(item,auto = false) {

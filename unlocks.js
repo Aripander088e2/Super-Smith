@@ -207,7 +207,7 @@ unlocks.push(
 );
 
 unlocks.push(
-    unlock({copper_bar:40},
+    unlock({copper_bar:50},
     ()=>{
         upgrades.push(automaticCopperLoading);
     })
