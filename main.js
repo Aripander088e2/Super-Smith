@@ -35,29 +35,37 @@ for (i in ships) {
 }
 
 var produceKeyFuncs = {
-    'a':mineIron
+    'a':()=>{addItem(iron_ore,'player',1 * mults.ironMineMult)}
 };
+$('#iron_ore-text').click(()=>{addItem(iron_ore,'player',1 * mults.ironMineMult)});
 
 var sellKeyFuncs = {
     'num':num => {sellItem(num)}
 }
+$('#player-table').click(()=>{sellItem(event.target.dataset.num)});
 
 var upgradeKeyFuncs = {
     'num':num => {buyUpgrade(num,upgrades,renderUpgradeTable)},
 }
+$('#upgrade-table').click(()=>{buyUpgrade(event.target.dataset.num,upgrades,renderUpgradeTable);});
 
 var automationKeyFuncs = {
     'num':num => {(subMode == '' ? buyUpgrade(num,automations,renderAutomationTable) : toggleAutomation(num))},
     't':automationModeToggle
 }
+$('#automation-table').click(()=>{(subMode == '' ? 
+buyUpgrade(event.target.dataset.num,automations,automations,renderAutomationTable) : 
+toggleAutomation(event.target.dataset.num,automations))});
 
 var shipyardKeyFuncs = {
     'num':num => {manufacture(ships[Object.keys(ships)[num-1]])}
 }
+$('#shipyard-list').click(()=>{manufacture(ships[Object.keys(ships)[event.target.dataset.num-1]])});
 
 var universalKeyFuncs = {
     'i':() => {return changeMode('produce')}
 }
+$('#production').click(()=>{changeMode('produce')});
 
 var modeDict = {
     'produce':{key:'i',
@@ -75,7 +83,7 @@ var modeDict = {
     'shipyard':{id:'shipyard',text:'Shipyard',key:'y',
         show:['shipyard-container']
     }
-}
+};
 
 var masterKeyFuncs = {
     produce:produceKeyFuncs,
@@ -107,21 +115,6 @@ $(document).keyup(function(e){
     else if (keyFuncs[e.key])
         keyFuncs[e.key]();
 });
-
-function mineIron() {
-    addItem(iron_ore,'player',1 * mults.ironMineMult);
-    totalProduced.iron_ore++;
-}
-
-function mineCopper() {
-    addItem(copper_ore,'player',1 * mults.copperMineMult)
-    totalProduced.copper_ore++;
-}
-
-function mineCoal() {
-    addItem(coal,'player',1 * mults.coalMineMult);
-    totalProduced.coal++;
-}
 
 function ironToFurnace() {
     let max = inventoryMaxVals['furnace1'].iron_ore;
@@ -188,15 +181,11 @@ function manufacture(item,auto = false) {
     else
         mult = 'base';
     amount = Math.min(mults[mult],inventoryMaxVals['player'][item.name] - (inventories['player'][item.name] ? inventories['player'][item.name] : 0) );
-    console.log(item,amount)
-    console.log(mults[mult])
-    console.log(inventoryMaxVals['player'][item.name],item.name)
     if (canAfford(item.recipe,'player',amount)) {
         removeRecipe(item,'player',amount);
         addItem(item,'player',amount * (item.output != undefined ? item.output : 1));
         if (totalProduced[item.name] == 0)
             $('#' + item.name + '-text .cost').hide();
-        totalProduced[item.name]++;
     }
     if (mode == 'shipyard')
         renderShipyard();
@@ -267,7 +256,6 @@ function furnaceTick() {
         removeItem(iron_ore,'furnace1')
         removeItem(coal,'furnace1',2)
         addItem(iron_bar,'player')
-        totalProduced.iron_bar++;
         smeltCooldown[0] = maxSmeltCooldown/mults.furnaceSpeed;
     }
     smeltCooldown[0]--;
@@ -279,7 +267,6 @@ function furnaceTick() {
         removeItem(copper_ore,'furnace2')
         removeItem(coal,'furnace2',2)
         addItem(copper_bar,'player')
-        totalProduced.copper_bar++;
         smeltCooldown[1] = maxSmeltCooldown/mults.furnaceSpeed;
     }
     smeltCooldown[1]--;
@@ -294,6 +281,7 @@ function addItem(item,invName,amount = 1) {
     else
         inventory[item.name] += amount;
     inventory[item.name] = Math.min(inventory[item.name],max);
+    totalProduced[item.name] += amount;
     renderInventoryTable(invName);
 }
 
@@ -308,6 +296,8 @@ function sellItem(num) {
     changeMoney(amount * items[item].val);
 }
 
+$('#automation-toggle-text').click(()=>{automationModeToggle()});
+
 function automationModeToggle() {
     subMode = (subMode == '' ? 'toggle' : '');
     $('#automation-toggle-text').html((subMode == '' ? 'Toggle Mode [t]' : 'Buy Mode [t]'));
@@ -316,9 +306,9 @@ function automationModeToggle() {
 
 function buyUpgrade(num,list,renderFunc) {
     let upgrade = list.filter(curr =>{
-        return !curr.bought;
+        return (curr.level != undefined || !curr.bought);
     })[num - 1];
-    if (money >= upgrade.cost) {
+    if (upgrade && money >= upgrade.cost) {
         changeMoney(-1 * upgrade.cost)
         upgrade.func();
         if (renderFunc == renderUpgradeTable)
@@ -366,10 +356,11 @@ function renderInventoryTable(invName) {
         if (mode == 'sell' && invName == 'player') {
             table += '<td> x $' + items[i].val + '</td>';
             table += '<td> = $' + items[i].val * inventories[invName][i] + '</td>';
+            table += '<td class="clickable" data-num="' + count + '">'
             if (count < 10)
-                table +=  '<td> [' + (sellText ? 'Press ' : '') + count + ']</td>';
+                table +=  '[' + (sellText ? 'Press ' : '') + count + ']</td>';
             else
-                table +=  '<td> [' + (sellText ? 'Press ' : '') + symbols[count - 10] + ']</td>';
+                table +=  '[' + (sellText ? 'Press ' : '') + symbols[count - 10] + ']</td>';
         }
         else if (invName == 'player'){
             curr = automations.filter(auto => auto.resource == items[i] && auto.type != 'loader')[0];
@@ -400,9 +391,9 @@ function renderUpgradeTable() {
     for (let i of upgrades) {
         if (!i.bought && count <= 9) {
             if (count % 2 == 1)
-                table += '<tr>';
-            table += '<td class="border-container center"><p>' + i.name + '</p>';
-            table += '<p>$' + i.cost + ' [' + count + ']</p>';
+                table += '<tr class="clickable">';
+            table += '<td class="border-container center" data-num="' + count + '"><p data-num="' + count + '">' + i.name + '</p>';
+            table += '<p data-num="' + count + '">$' + i.cost + ' [' + count + ']</p>';
             table += '</p>';
             if (count % 2 == 0)
                 table += '</tr>';
@@ -417,14 +408,14 @@ function renderAutomationTable() {
     let count = 1;
     for (let i of automations) {
         if (count % 2 == 1)
-            table += '<tr>';
-        table += '<td class="border-container automation-item ' + (i.on ? '' : 'red-border') + '"><p class="title">';
+            table += '<tr class="clickable">';
+        table += '<td class="border-container automation-item ' + (i.on ? '' : 'red-border') + '" data-num="' + count + '"><p class="title" data-num="' + count + '">';
         table += i.name + '</p>';
-        table += '<p>Level:' + i.level + '</p>';
+        table += '<p data-num="' + count + '">Level:' + i.level + '</p>';
         if (subMode == '')
-            table += '<p>Upgrade: $' + i.cost + ' [' + (count <= 9 ? count : symbols[count-10]) +']</p></td>';
+            table += '<p data-num="' + count + '">Upgrade: $' + i.cost + ' [' + (count <= 9 ? count : symbols[count-10]) +']</p></td>';
         else {
-            table += '<p> <span class="' + (i.on ? 'green' : 'red') + '">' + (i.on ? 'On' : 'Off');
+            table += '<p data-num="' + count + '"> <span class="' + (i.on ? 'green' : 'red') + '">' + (i.on ? 'On' : 'Off');
             table += '</span> [' + (count <= 9 ? count : symbols[count-10]) +']</p></td>';
         }
         if (count % 2 == 0)
@@ -440,12 +431,12 @@ function renderShipyard() {
     let count = 1;
     for (let i in ships) {
         curr = ships[i];
-        table = '<li><table class="shipyard-table border-container">'
-        table += '<tr><th colspan="2"><span class="title">' + prettyPrint(curr.name) + '</span> [' + count + ']</th></tr>'
+        table = '<li><table class="shipyard-table border-container clickable" data-num="' + count + '">'
+        table += '<tr><th colspan="2" data-num="' + count + '"><span class="title" data-num="' + count + '">' + prettyPrint(curr.name) + '</span> [' + count + ']</th></tr>'
         for (let j in curr.recipe) {
             table += '<tr>';
-            table += '<td>' + prettyPrint(j) + '</td>';
-            table += '<td>' + prettyPrint(inventories.player[j]) + '/' + curr.recipe[j] + '</td>';
+            table += '<td data-num="' + count + '">' + prettyPrint(j) + '</td>';
+            table += '<td data-num="' + count + '">' + prettyPrint(inventories.player[j]) + '/' + curr.recipe[j] + '</td>';
             table += '</tr>';
         }
         table += '</table></li>'
@@ -569,7 +560,6 @@ function load(string) {
     money = save.money;
     inventories = save.inventories;
     inventoryMaxVals = save.inventoryMaxVals;
-    console.log(unlocks,save.unlocks)   
     for (let i = 0; i < save.unlocks.length; i++)
         if(save.unlocks[i].bought) {
             unlocks[i].func();
@@ -590,7 +580,6 @@ function load(string) {
             }
     }
     
-    console.log(save.automations,automations);
     for (let i = 0; i < save.automations.length; i++) {
         automations[i].level = save.automations[i].level;
         automations[i].cost = save.automations[i].cost;

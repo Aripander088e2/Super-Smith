@@ -3,6 +3,7 @@ body {
     padding: 20px;
     font-family: Helvetica;
     color: white;
+    user-select: none;
 }
 
 p {
@@ -17,7 +18,7 @@ li {
     list-style: none;
 }
 
-.clickable {
+.clickable, .tab {
     cursor:pointer;
     user-select: none;
 }

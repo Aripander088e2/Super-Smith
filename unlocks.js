@@ -31,7 +31,8 @@ unlocks.push(
     unlock({iron_ore:7},
     ()=>{ 
         $('#sell-items').fadeIn(500);
-        universalKeyFuncs.o = () => {return changeMode('sell')};
+        $('#sell-items').click(()=>{changeMode('sell')});
+        universalKeyFuncs.o = ()=>{return changeMode('sell')};
     })
 );
 
@@ -39,7 +40,8 @@ unlocks.push(
     unlock({iron_bulkhead:1,simple_circuit_board:1,small_engine:1},
     ()=>{ 
         $('#shipyard').fadeIn(500);
-        universalKeyFuncs.y = () => {return changeMode('shipyard')};
+        $('#shipyard').click(()=>{changeMode('shipyard')});
+        universalKeyFuncs.y = ()=>{return changeMode('shipyard')};
     })
 )
 
@@ -48,7 +50,8 @@ unlocks.push(
     ()=>{ 
         upgrades.push(coalMining);
         $('#upgrade').fadeIn(500);
-        universalKeyFuncs.p = () => {return changeMode('upgrade')};
+        $('#upgrade').click(()=>{changeMode('upgrade')});
+        universalKeyFuncs.p = ()=>{return changeMode('upgrade')};
     })
 );
 
