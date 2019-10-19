@@ -7,7 +7,6 @@ mults.ironMineMult = 1;
 mults.copperMineMult = 1;
 mults.autoMineMult = 1;
 mults.moveMult = 1;
-mults.furnaceSpeed = 1;
 
 mults.manufacturingMult = 1;
 mults.autoManufacturingMult = 1;
@@ -93,9 +92,7 @@ var masterKeyFuncs = {
     shipyard:shipyardKeyFuncs
 };
 
-var inventories = {player:{},
-furnace1:{iron_ore:0,coal:0},
-furnace2:{copper_ore:0,coal:0}};
+var inventories = {player:{}};
 
 var smeltCooldown = [0,0];
 var maxSmeltCooldown = 60;
@@ -117,8 +114,8 @@ $(document).keyup(function(e){
 });
 
 function ironToFurnace() {
-    let max = inventoryMaxVals['furnace1'].iron_ore;
-    let amount = Math.min(1 * mults.moveMult,max - inventories['furnace1'].iron_ore,inventories['player'].iron_ore);
+    let max = furnace1.maxCapacity.iron_ore;
+    let amount = Math.min(1 * mults.moveMult,max - furnace1.inventory.iron_ore,inventories['player'].iron_ore);
     if (canAfford(iron_ore,'player',amount)) {
         removeItem(iron_ore,'player',amount);
         addItem(iron_ore,'furnace1',amount);
@@ -154,8 +151,13 @@ function canAfford(item,givenInv,amount) {
 }
 
 function coalToFurnace(num) {
-    let max = inventoryMaxVals['furnace' + num].coal;
-    let amount = Math.min(1 * mults.moveMult,max - inventories['furnace' + num].coal,inventories['player'].coal);
+    let furnace;
+    if (num == 1)
+        furnace = furnace1;
+    else
+        furnace = furnace2;
+    let max = furnace.maxCapacity.coal;
+    let amount = Math.min(1 * mults.moveMult,max - furnace.inventory.coal,inventories['player'].coal);
     if (canAfford(coal,'player',amount)) {
         removeItem(coal,'player',amount);
         addItem(coal,'furnace' + num,amount);
@@ -163,8 +165,8 @@ function coalToFurnace(num) {
 }
 
 function copperToFurnace() {
-    let max = inventoryMaxVals['furnace2'].copper_ore;
-    let amount = Math.min(1 * mults.moveMult,max - inventories['furnace2'].copper_ore,inventories['player'].copper_ore);
+    let max = furnace2.maxCapacity.copper_ore;
+    let amount = Math.min(1 * mults.moveMult,max - furnace2.inventory.copper_ore,inventories['player'].copper_ore);
     if (canAfford(copper_ore,'player',amount)) {
         removeItem(copper_ore,'player',amount);
         addItem(copper_ore,'furnace2',amount);
@@ -251,38 +253,38 @@ function gameTick() {
 
 function furnaceTick() {
     // Furnace 1
-    let inv = inventories.furnace1;
+    let inv = furnace1.inventory;
     if (inv.iron_ore && inv.coal >= 2 && smeltCooldown[0] <= 0 && inventories.player.iron_bar != inventoryMaxVals.player.iron_bar) {
         removeItem(iron_ore,'furnace1')
         removeItem(coal,'furnace1',2)
         addItem(iron_bar,'player')
-        smeltCooldown[0] = maxSmeltCooldown/mults.furnaceSpeed;
+        smeltCooldown[0] = maxSmeltCooldown/furnace1.speed;
     }
     smeltCooldown[0]--;
-    $("#furnace1-inner").width(smeltCooldown[0]/(maxSmeltCooldown/mults.furnaceSpeed) * 100 + '%');
+    $("#furnace1-inner").width(smeltCooldown[0]/(maxSmeltCooldown/furnace1.speed) * 100 + '%');
 
     // Furnace 2
-    inv = inventories.furnace2;
+    inv = furnace2.inventory;
     if (inv.copper_ore && inv.coal >= 2 && smeltCooldown[1] <= 0 && inventories.player.copper_bar != inventoryMaxVals.player.copper_bar) {
         removeItem(copper_ore,'furnace2')
         removeItem(coal,'furnace2',2)
         addItem(copper_bar,'player')
-        smeltCooldown[1] = maxSmeltCooldown/mults.furnaceSpeed;
+        smeltCooldown[1] = maxSmeltCooldown/furnace2.speed;
     }
     smeltCooldown[1]--;
-    $("#furnace2-inner").width(smeltCooldown[1]/(maxSmeltCooldown/mults.furnaceSpeed) * 100 + '%');
+    $("#furnace2-inner").width(smeltCooldown[1]/(maxSmeltCooldown/furnace2.speed) * 100 + '%');
 }
 
-function addItem(item,invName,amount = 1) {
-    let inventory = inventories[invName];
-    let max = inventoryMaxVals[invName][item.name];
+function addItem(item,entity,amount = 1) {
+    let inventory = entity.inventory;
+    let max = entity.maxCapacity[item.name];
     if (inventory[item.name] == undefined)
         inventory[item.name] = amount;
     else
         inventory[item.name] += amount;
     inventory[item.name] = Math.min(inventory[item.name],max);
     totalProduced[item.name] += amount;
-    renderInventoryTable(invName);
+    renderInventoryTable(entity.name);
 }
 
 function sellItem(num) {
