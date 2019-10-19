@@ -1,8 +1,8 @@
 var upgrades = [];
 
 let coalMining = {name:'Coal Mining',cost:40,bought:false,func(){
-    produceKeyFuncs.s = ()=>{addItem(coal,'player',1 * mults.coalMineMult)};
-    $('#coal-text').click(()=>{addItem(coal,'player',1 * mults.coalMineMult)});
+    produceKeyFuncs.s = ()=>{addItem(coal,player,1 * mults.coalMineMult)};
+    $('#coal-text').click(()=>{addItem(coal,player,1 * mults.coalMineMult)});
     $('#coal-text').show();
     upgrades.push(ironForging);
 }};
@@ -10,28 +10,28 @@ let coalMining = {name:'Coal Mining',cost:40,bought:false,func(){
 let ironForging = {name:'Iron Forging',cost:65,bought:false,func(){
     modeDict.produce.show.push('furnace1-container');
     produceKeyFuncs.j = ironToFurnace;
-    produceKeyFuncs.k = () => {coalToFurnace(1)};
+    produceKeyFuncs.k = () => {coalToFurnace(furnace1)};
     $('#load-iron_ore-text').show();
     $('#load-iron_ore-text').click(ironToFurnace);
     $('#load-coal-text').show()
-    $('#load-coal-text').click(() => {coalToFurnace(1)});
+    $('#load-coal-text').click(() => {coalToFurnace(furnace1)});
 }}
 
 let copperForging = {name:'Copper Forging',cost:450,bought:false,func(){
     modeDict.produce.show.push('furnace2-container');
     produceKeyFuncs.l = copperToFurnace;
-    produceKeyFuncs.K = () => {coalToFurnace(2)};
+    produceKeyFuncs.K = () => {coalToFurnace(furnace2)};
     $('#load-copper_ore-text').show();
     $('#load-copper_ore-text').click(copperToFurnace);
     $('#load_coal2-text').show();
-    $('#load_coal2-text').click(() => {coalToFurnace(2)});
+    $('#load_coal2-text').click(() => {coalToFurnace(furnace2)});
 }}
 
 let improvedFurnaceCapacity = {name:'Improved Furnace Capacity',cost:120,bought:false,func(){
-    for (let i in inventoryMaxVals.furnace1)
-        inventoryMaxVals.furnace1[i] = Math.ceil(inventoryMaxVals.furnace1[i] * 1.5);
-    for (let i in inventoryMaxVals.furnace2)
-        inventoryMaxVals.furnace2[i] = Math.ceil(inventoryMaxVals.furnace2[i] * 1.5);
+    for (let i in furnace1.maxCapacity)
+        furnace1.maxCapacity[i] = Math.ceil(furnace1.maxCapacity[i] * 1.5);
+    for (let i in furnace2.maxCapacity)
+        furnace2.maxCapacity[i] = Math.ceil(furnace2.maxCapacity[i] * 1.5);
 }};
 
 let improvedFurnaceSpeed = {name:'Furnace Speed',cost:150,bought:false,func(){
@@ -67,9 +67,9 @@ let improvedIronMining = {name:'Improved Iron Mining',cost:350,bought:false,func
 }};
 
 let copperMining = {name:'Copper Mining',cost:400,bought:false,func(){
-    produceKeyFuncs.d = ()=>{addItem(copper_ore,'player',1 * mults.copperMineMult)};
+    produceKeyFuncs.d = ()=>{addItem(copper_ore,player,1 * mults.copperMineMult)};
     
-    $('#copper_ore-text').click(()=>{addItem(copper_ore,'player',1 * mults.copperMineMult)});
+    $('#copper_ore-text').click(()=>{addItem(copper_ore,player,1 * mults.copperMineMult)});
     $('#copper_ore-text').show();
 }};
 
@@ -78,10 +78,10 @@ let improvedFurnaceLoading = {name:'Improved Furnace Loading',cost:200,bought:fa
 }};
 
 let improvedFurnaceCapacity2 = {name:'Improved Furnace Capacity 2',cost:700,bought:false,func(){
-    for (let i in inventoryMaxVals.furnace1)
-        inventoryMaxVals.furnace1[i] = Math.ceil(inventoryMaxVals.furnace1[i] * 1.5);
-    for (let i in inventoryMaxVals.furnace2)
-        inventoryMaxVals.furnace2[i] = Math.ceil(inventoryMaxVals.furnace2[i] * 1.5);
+    for (let i in furnace1.maxCapacity)
+        furnace1.maxCapacity[i] = Math.ceil(furnace1.maxCapacity[i] * 1.5);
+    for (let i in furnace2.maxCapacity)
+        furnace2.maxCapacity[i] = Math.ceil(furnace2.maxCapacity[i] * 1.5);
 }};
 
 let improvedCopperMining = {name:'Improved Copper Mining',cost:600,bought:false,func(){

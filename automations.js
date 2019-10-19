@@ -20,7 +20,7 @@ function autoMineTick() {
         if (i.maxCooldown) {
             if (i.cooldown <= 0 && i.on) {
                 if (i.type == 'miner')
-                    addItem(i.resource,'player',i.amount * mults.autoMineMult);
+                    addItem(i.resource,player,i.amount * mults.autoMineMult);
                 else
                     i.autoFunc();
                 i.cooldown = i.maxCooldown;

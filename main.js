@@ -34,9 +34,9 @@ for (i in ships) {
 }
 
 var produceKeyFuncs = {
-    'a':()=>{addItem(iron_ore,'player',1 * mults.ironMineMult)}
+    'a':()=>{addItem(iron_ore,player,1 * mults.ironMineMult)}
 };
-$('#iron_ore-text').click(()=>{addItem(iron_ore,'player',1 * mults.ironMineMult)});
+$('#iron_ore-text').click(()=>{addItem(iron_ore,player,1 * mults.ironMineMult)});
 
 var sellKeyFuncs = {
     'num':num => {sellItem(num)}
@@ -92,8 +92,6 @@ var masterKeyFuncs = {
     shipyard:shipyardKeyFuncs
 };
 
-var inventories = {player:{}};
-
 var smeltCooldown = [0,0];
 var maxSmeltCooldown = 60;
 
@@ -115,15 +113,15 @@ $(document).keyup(function(e){
 
 function ironToFurnace() {
     let max = furnace1.maxCapacity.iron_ore;
-    let amount = Math.min(1 * mults.moveMult,max - furnace1.inventory.iron_ore,inventories['player'].iron_ore);
-    if (canAfford(iron_ore,'player',amount)) {
-        removeItem(iron_ore,'player',amount);
-        addItem(iron_ore,'furnace1',amount);
+    let amount = Math.min(1 * mults.moveMult,max - furnace1.inventory.iron_ore,player.inventory.iron_ore);
+    if (canAfford(iron_ore,player,amount)) {
+        removeItem(iron_ore,player,amount);
+        addItem(iron_ore,furnace1,amount);
     }
 }
 
-function canAfford(item,givenInv,amount) {
-    let inv = inventories[givenInv];
+function canAfford(item,entity,amount) {
+    let inv = entity.inventory;
     let result = true
     let index;
     let insufficient = [];
@@ -131,18 +129,18 @@ function canAfford(item,givenInv,amount) {
         for (i in item)
             if (!inv[i] || item[i] * amount > inv[i]) {
                 result = false;
-                if (givenInv == 'player') {
+                if (entity == player) {
                     index = Object.keys(inv).indexOf(i);
                     insufficient.push($('.player-inventory-row')[index]);
                 }
             }
-        if (!result && givenInv == 'player') {
+        if (!result && entity == player) {
             flash(insufficient);
         }
     }
     else {
         result = (inv[item.name] != undefined && inv[item.name] >= amount);
-        if (givenInv == 'player' && !result) {
+        if (entity == player && !result) {
             index = Object.keys(inv).indexOf(item.name);
             flash($('.player-inventory-row')[index]);
         }
@@ -150,26 +148,21 @@ function canAfford(item,givenInv,amount) {
     return result;
 }
 
-function coalToFurnace(num) {
-    let furnace;
-    if (num == 1)
-        furnace = furnace1;
-    else
-        furnace = furnace2;
+function coalToFurnace(furnace) {
     let max = furnace.maxCapacity.coal;
-    let amount = Math.min(1 * mults.moveMult,max - furnace.inventory.coal,inventories['player'].coal);
-    if (canAfford(coal,'player',amount)) {
-        removeItem(coal,'player',amount);
-        addItem(coal,'furnace' + num,amount);
+    let amount = Math.min(1 * mults.moveMult,max - furnace.inventory.coal,player.inventory.coal);
+    if (canAfford(coal,player,amount)) {
+        removeItem(coal,player,amount);
+        addItem(coal,furnace,amount);
     }
 }
 
 function copperToFurnace() {
     let max = furnace2.maxCapacity.copper_ore;
-    let amount = Math.min(1 * mults.moveMult,max - furnace2.inventory.copper_ore,inventories['player'].copper_ore);
-    if (canAfford(copper_ore,'player',amount)) {
-        removeItem(copper_ore,'player',amount);
-        addItem(copper_ore,'furnace2',amount);
+    let amount = Math.min(1 * mults.moveMult,max - furnace2.inventory.copper_ore,player.inventory.copper_ore);
+    if (canAfford(copper_ore,player,amount)) {
+        removeItem(copper_ore,player,amount);
+        addItem(copper_ore,furnace2,amount);
     }
 }
 
@@ -182,10 +175,10 @@ function manufacture(item,auto = false) {
         mult = (auto ? 'autoAssemblyMult' : 'assemblyMult')
     else
         mult = 'base';
-    amount = Math.min(mults[mult],inventoryMaxVals['player'][item.name] - (inventories['player'][item.name] ? inventories['player'][item.name] : 0) );
-    if (canAfford(item.recipe,'player',amount)) {
-        removeRecipe(item,'player',amount);
-        addItem(item,'player',amount * (item.output != undefined ? item.output : 1));
+    amount = Math.min(mults[mult],player.maxCapacity[item.name] - (player.inventory[item.name] ? player.inventory[item.name] : 0) );
+    if (canAfford(item.recipe,player,amount)) {
+        removeRecipe(item,player,amount);
+        addItem(item,player,amount * (item.output != undefined ? item.output : 1));
         if (totalProduced[item.name] == 0)
             $('#' + item.name + '-text .cost').hide();
     }
@@ -254,10 +247,10 @@ function gameTick() {
 function furnaceTick() {
     // Furnace 1
     let inv = furnace1.inventory;
-    if (inv.iron_ore && inv.coal >= 2 && smeltCooldown[0] <= 0 && inventories.player.iron_bar != inventoryMaxVals.player.iron_bar) {
-        removeItem(iron_ore,'furnace1')
-        removeItem(coal,'furnace1',2)
-        addItem(iron_bar,'player')
+    if (inv.iron_ore && inv.coal >= 2 && smeltCooldown[0] <= 0 && player.inventory.iron_bar != player.maxCapacity.iron_bar) {
+        removeItem(iron_ore,furnace1)
+        removeItem(coal,furnace1,2)
+        addItem(iron_bar,player)
         smeltCooldown[0] = maxSmeltCooldown/furnace1.speed;
     }
     smeltCooldown[0]--;
@@ -265,10 +258,10 @@ function furnaceTick() {
 
     // Furnace 2
     inv = furnace2.inventory;
-    if (inv.copper_ore && inv.coal >= 2 && smeltCooldown[1] <= 0 && inventories.player.copper_bar != inventoryMaxVals.player.copper_bar) {
-        removeItem(copper_ore,'furnace2')
-        removeItem(coal,'furnace2',2)
-        addItem(copper_bar,'player')
+    if (inv.copper_ore && inv.coal >= 2 && smeltCooldown[1] <= 0 && player.inventory.copper_bar != player.maxCapacity.copper_bar) {
+        removeItem(copper_ore,furnace2)
+        removeItem(coal,furnace2,2)
+        addItem(copper_bar,player)
         smeltCooldown[1] = maxSmeltCooldown/furnace2.speed;
     }
     smeltCooldown[1]--;
@@ -284,17 +277,17 @@ function addItem(item,entity,amount = 1) {
         inventory[item.name] += amount;
     inventory[item.name] = Math.min(inventory[item.name],max);
     totalProduced[item.name] += amount;
-    renderInventoryTable(entity.name);
+    renderInventoryTable(entity);
 }
 
 function sellItem(num) {
-    let item = Object.keys(inventories['player'])[num - 1];
+    let item = Object.keys(player.inventory)[num - 1];
     if (item == undefined)
         return;
-    let amount = inventories['player'][items[item].name];
+    let amount = player.inventory[items[item].name];
     if (sellText)
         sellText = false;
-    removeItem(item,'player','all');
+    removeItem(item,player,'all');
     changeMoney(amount * items[item].val);
 }
 
@@ -322,21 +315,21 @@ function buyUpgrade(num,list,renderFunc) {
 function toggleAutomation(num) {
     automations[num - 1].on = !automations[num-1].on;
     renderAutomationTable();
-    renderInventoryTable('player');
+    renderInventoryTable(player);
 }
 
-function removeItem(item,invName,amount = 1) {
-    let inventory = inventories[invName];
+function removeItem(item,entity,amount = 1) {
+    let inventory = entity.inventory;
     let currItem = (item.name == undefined ? item : item.name);
     if (amount == 'all')
         amount = inventory[currItem];
     inventory[currItem] -= amount;
-    renderInventoryTable(invName);
+    renderInventoryTable(entity.name);
 }
 
-function removeRecipe(item,givenInv,mult) {
+function removeRecipe(item,entity,mult) {
     for (i in item.recipe)
-        removeItem(items[i],givenInv,item.recipe[i]*mult);
+        removeItem(items[i],entity,item.recipe[i]*mult);
 }
 
 function changeMoney(amount) {
@@ -346,25 +339,25 @@ function changeMoney(amount) {
     $('#money-val').html(money);
 }
 
-function renderInventoryTable(invName) {
+function renderInventoryTable(entity) {
     let table = '';
     let count = 1;
     let curr,max;
-    for (let i in inventories[invName]) {
-        max = prettyPrint(inventoryMaxVals[invName][i]);
-        table += '<tr class="' + invName + '-inventory-row">';
+    for (let i in entity.inventory) {
+        max = prettyPrint(entity.maxCapacity[i]);
+        table += '<tr class="' + entity.name + '-inventory-row">';
         table += '<td>' + prettyPrint(i) + ':</td>';
-        table += '<td>' + inventories[invName][i] + '/' + max + '</td>';
-        if (mode == 'sell' && invName == 'player') {
+        table += '<td>' + entity.inventory[i] + '/' + max + '</td>';
+        if (mode == 'sell' && entity.name == 'player') {
             table += '<td> x $' + items[i].val + '</td>';
-            table += '<td> = $' + items[i].val * inventories[invName][i] + '</td>';
+            table += '<td> = $' + items[i].val * entity.inventory[i] + '</td>';
             table += '<td class="clickable" data-num="' + count + '">'
             if (count < 10)
                 table +=  '[' + (sellText ? 'Press ' : '') + count + ']</td>';
             else
                 table +=  '[' + (sellText ? 'Press ' : '') + symbols[count - 10] + ']</td>';
         }
-        else if (invName == 'player'){
+        else if (entity == player){
             curr = automations.filter(auto => auto.resource == items[i] && auto.type != 'loader')[0];
             if (curr && curr.maxCooldown && curr.on) {
                 let mult = 1;
@@ -384,7 +377,7 @@ function renderInventoryTable(invName) {
         table += '</tr>';
         count++;
     }
-    $('#' + invName +'-table').html(table);
+    $('#' + entity.name +'-table').html(table);
 }
 
 function renderUpgradeTable() {
@@ -438,7 +431,7 @@ function renderShipyard() {
         for (let j in curr.recipe) {
             table += '<tr>';
             table += '<td data-num="' + count + '">' + prettyPrint(j) + '</td>';
-            table += '<td data-num="' + count + '">' + prettyPrint(inventories.player[j]) + '/' + curr.recipe[j] + '</td>';
+            table += '<td data-num="' + count + '">' + prettyPrint(player.inventory) + '/' + curr.recipe[j] + '</td>';
             table += '</tr>';
         }
         table += '</table></li>'
@@ -473,9 +466,9 @@ function changeMode(given) {
     else if (given == 'shipyard')
         renderShipyard();
     else {
-        renderInventoryTable('player');
-        renderInventoryTable('furnace1')
-        renderInventoryTable('furnace2')
+        renderInventoryTable(player);
+        renderInventoryTable(furnace1);
+        renderInventoryTable(furnace2);
     }
 }
 
@@ -507,8 +500,9 @@ function save() {
     window.sessionStorage.superSmithSaveId = JSON.stringify(saveId);
     save.mode = mode;
     save.money = money;
-    save.inventories = inventories;
-    save.inventoryMaxVals = inventoryMaxVals;
+    save.player = player;
+    save.furnace1 = furnace1;
+    save.furnace2 = furnace2;
     save.upgrades = upgrades;
     save.unlocks = unlocks;
     save.automations = automations;
@@ -560,8 +554,9 @@ function load(string) {
     saveId = JSON.parse(window.sessionStorage.superSmithSaveId);
     shouldAutosave = true;
     money = save.money;
-    inventories = save.inventories;
-    inventoryMaxVals = save.inventoryMaxVals;
+    player = save.player;
+    furnace1 = save.furnace1;
+    furnace2 = save.furnace2;
     for (let i = 0; i < save.unlocks.length; i++)
         if(save.unlocks[i].bought) {
             unlocks[i].func();

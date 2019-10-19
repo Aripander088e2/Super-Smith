@@ -10,7 +10,7 @@ let improvedResourceCapacity = function (){
     upgrade.bought = false;
     upgrade.func = () => {
         for (let i of resources)
-            inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
+            player.maxCapacity[i] = Math.ceil(player.maxCapacity[i] * 1.5);
         renderInventoryTable('player');
         capacityUpgradeLevels.resources++;
         resourceCapacityUnlock();
@@ -27,7 +27,7 @@ let improvedManufacturedCapacity = function (){
     upgrade.bought = false;
     upgrade.func = () => {
         for (let i of manufactured)
-            inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
+            player.maxCapacity[i] = Math.ceil(player.maxCapacity[i] * 1.5);
         renderInventoryTable('player');
         manufacturedCapacityUnlock();
         capacityUpgradeLevels.manufactured++;
@@ -44,7 +44,7 @@ let improvedAssemblyCapacity = function (){
     upgrade.bought = false;
     upgrade.func = () => {
         for (let i of assembled)
-            inventoryMaxVals.player[i] = Math.ceil(inventoryMaxVals.player[i] * 1.5);
+            player.maxCapacity[i] = Math.ceil(player.maxCapacity[i] * 1.5);
         renderInventoryTable('player');
         assemblyCapacityUnlock();
         capacityUpgradeLevels.assembly++;
@@ -55,9 +55,9 @@ let improvedAssemblyCapacity = function (){
 // ----- Capacity Unlocks -----
 let resourceCapacityUnlock = () => {
     let upgrade = improvedResourceCapacity();
-    let newUnlock = unlock({iron_ore:inventoryMaxVals.player.iron_ore * 3,
-        copper_ore:(typeof copperMining != 'undefined' && copperMining.bought ? inventoryMaxVals.player.copper_ore * 3 : 0),
-        coal:inventoryMaxVals.player.coal * 3},
+    let newUnlock = unlock({iron_ore:player.maxCapacity.iron_ore * 3,
+        copper_ore:(typeof copperMining != 'undefined' && copperMining.bought ? player.maxCapacity.copper_ore * 3 : 0),
+        coal:player.maxCapacity.coal * 3},
         ()=>{
             upgrades.push(upgrade);
             $('#new-upgrade').show();
@@ -69,7 +69,7 @@ resourceCapacityUnlock();
 
 let manufacturedCapacityUnlock = () => {
     let upgrade = improvedManufacturedCapacity();
-    let newUnlock = unlock({iron_ore:inventoryMaxVals.player.iron_ore * 3,copper_ore:inventoryMaxVals.player.copper_ore * 3,coal:inventoryMaxVals.player.coal * 3},
+    let newUnlock = unlock({iron_ore:player.maxCapacity.iron_ore * 3,copper_ore:player.maxCapacity.copper_ore * 3,coal:player.maxCapacity.coal * 3},
         ()=>{
             upgrades.push(upgrade);
             $('#new-upgrade').show();
@@ -81,7 +81,7 @@ manufacturedCapacityUnlock();
 
 let assemblyCapacityUnlock = () => {
     let upgrade = improvedAssemblyCapacity()
-    let newUnlock = unlock({iron_ore:inventoryMaxVals.player.iron_ore * 3,copper_ore:inventoryMaxVals.player.copper_ore * 3,coal:inventoryMaxVals.player.coal * 3},
+    let newUnlock = unlock({iron_ore:player.maxCapacity.iron_ore * 3,copper_ore:player.maxCapacity.copper_ore * 3,coal:player.maxCapacity.coal * 3},
         ()=>{
             upgrades.push(upgrade);
             $('#new-upgrade').show();
