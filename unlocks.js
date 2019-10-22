@@ -173,6 +173,22 @@ unlocks.push(
 );
 
 unlocks.push(
+    unlock({small_hauler:2},
+    ()=>{
+        upgrades.push(smallLifeSupportAssembly);
+        $('#new-upgrade').show();
+    })
+);
+
+unlocks.push(
+    unlock({small_transport:2},
+    ()=>{
+        upgrades.push(smallRailgunAssembly);
+        $('#new-upgrade').show();
+    })
+);
+
+unlocks.push(
     unlock({iron_plate:15},
     ()=>{
         upgrades.push(copperMining);

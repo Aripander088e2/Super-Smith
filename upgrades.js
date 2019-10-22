@@ -130,9 +130,20 @@ let simpleCircuitBoardAssembly = {name:'Simple Circuit Board Assembly',cost:1200
 
 let smallEngineAssembly = {name:'Small Engine Assembly',cost:2500,bought:false,func(){
     produceKeyFuncs.m = () => {manufacture(small_engine)};
-    //upgrades.push(improvedManufacturing2)
     $('#small_engine-text').show();
     $('#small_engine-text').click(() => {manufacture(small_engine)});
+}};
+
+let smallLifeSupportAssembly = {name:'Small Life Support Assembly',cost:5000,bought:false,func(){
+    produceKeyFuncs.q = () => {manufacture(small_life_support)};
+    $('#small_life_support-text').show();
+    $('#small_life_support-text').click(() => {manufacture(small_life_support)});
+}};
+
+let smallRailgunAssembly = {name:'Small Railgun Assembly',cost:12000,bought:false,func(){
+    produceKeyFuncs.w = () => {manufacture(small_railgun)};
+    $('#small_railgun-text').show();
+    $('#small_railgun-text').click(() => {manufacture(small_railgun)});
 }};
 
 let improvedManufacturing = {name:'Improved Manufacturing',cost:800,bought:false,func(){
