@@ -241,6 +241,7 @@ function gameTick() {
             
         }
     }
+    renderUI();
     currTick++;
 }
 
@@ -277,7 +278,6 @@ function addItem(item,entity,amount = 1) {
         inventory[item.name] += amount;
     inventory[item.name] = Math.min(inventory[item.name],max);
     totalProduced[item.name] += amount;
-    renderInventoryTable(entity);
 }
 
 function sellItem(num) {
@@ -324,7 +324,6 @@ function removeItem(item,entity,amount = 1) {
     if (amount == 'all')
         amount = inventory[currItem];
     inventory[currItem] -= amount;
-    renderInventoryTable(entity.name);
 }
 
 function removeRecipe(item,entity,mult) {
@@ -431,7 +430,7 @@ function renderShipyard() {
         for (let j in curr.recipe) {
             table += '<tr>';
             table += '<td data-num="' + count + '">' + prettyPrint(j) + '</td>';
-            table += '<td data-num="' + count + '">' + prettyPrint(player.inventory) + '/' + curr.recipe[j] + '</td>';
+            table += '<td data-num="' + count + '">' + prettyPrint(player.inventory[j]) + '/' + curr.recipe[j] + '</td>';
             table += '</tr>';
         }
         table += '</table></li>'
@@ -457,13 +456,16 @@ function changeMode(given) {
         $('#new-upgrade').hide();
 
     mode = given;
+    renderUI();
+}
 
-    if (given == 'upgrade') {
+function renderUI() {
+    if (mode == 'upgrade') {
         renderUpgradeTable();
     }
-    else if (given == 'automation')
+    else if (mode == 'automation')
         renderAutomationTable();
-    else if (given == 'shipyard')
+    else if (mode == 'shipyard')
         renderShipyard();
     else {
         renderInventoryTable(player);

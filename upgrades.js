@@ -175,7 +175,7 @@ let automatedCopperMining = {name:'Automated Copper Mining',cost:550,bought:fals
     automations.push(autoCopperMiner);
 }};
 
-let automaticCoalLoading = {name:'Automated Coal Loading',cost:700,bought:false,func(){
+let automaticCoalLoading = {name:'Automated Coal Loading',cost:450,bought:false,func(){
     automations.push(autoCoalLoader);
 }};
 

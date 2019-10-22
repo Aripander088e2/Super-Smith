@@ -2,7 +2,7 @@ let autoCoalMiner = autoMiner('coal',30,60);
 let autoIronMiner = autoMiner('iron_ore',40,70);
 let autoCopperMiner = autoMiner('copper_ore',50,80);
 
-let autoCoalLoader = autoDoer('coal','Loader',()=>{coalToFurnace(1); coalToFurnace(2);},45,120);
+let autoCoalLoader = autoDoer('coal','Loader',()=>{coalToFurnace(furnace1); coalToFurnace(furnace2);},45,120);
 let autoIronLoader = autoDoer('iron_ore','Loader',()=>{ironToFurnace()},65,140);
 let autoCopperLoader = autoDoer('copper_ore','Loader',()=>{copperToFurnace()},85,180);
 

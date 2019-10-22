@@ -45,7 +45,7 @@ var furnace1 = {
 
 var furnace2 = {
     inventory: {copper_ore:0,coal:0},
-    maxCapacity:{iron_ore:5,coal:10},
+    maxCapacity:{copper_ore:5,coal:10},
     speed: 1,
     name:'furnace2'
 }
