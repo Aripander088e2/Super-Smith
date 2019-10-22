@@ -33,18 +33,30 @@
         </div>
         <div id='main-col' class='column'>
             <div id="production-container">
-                <p class="clickable" id="iron_ore-text">Mine Iron [<span id="iron_ore-press">click here or press </span>a]</p>
-                <p class="clickable" id="coal-text" hidden>Mine Coal [s]</p>
-                <p class="clickable" id="copper_ore-text" hidden>Mine Copper [d]</p>
-                <p class="clickable" id="load-iron_ore-text" hidden>Load Iron Into Furnace 1 [j]</p>
-                <p class="clickable" id="load-coal-text" hidden>Load Coal Into Furnace 1 [k]</p>
-                <p class="clickable" id="load-copper_ore-text" hidden>Load Copper Into Furnace 2 [l]</p>
-                <p class="clickable" id="load_coal2-text" hidden>Load Coal Into Furnace 2 [K]</p>
-                <p class="clickable" id="iron_plate-text" hidden>Make Iron Plate <span class="cost">(Cost: 1 iron bar)</span> [z]</p>
-                <p class="clickable" id="copper_wire-text" hidden>Make Copper Wire <span class="cost">(Cost: 1 copper bar, yields 5)</span> [x]</p>
-                <p class="clickable" id="iron_bulkhead-text" hidden>Assemble Iron Bulkhead <span class="cost">(Cost: 5 iron plates)</span> [b]</p>
-                <p class="clickable" id="simple_circuit_board-text" hidden>Assemble Simple Circuit Board <span class="cost">(Cost: 2 Iron Bars, 15 Copper Wire)</span> [n]</p>
-                <p class="clickable" id="small_engine-text" hidden>Assemble Small Engine <span class="cost">(Cost: 3 Iron Bars, 2 Copper Bars, 10 Copper Wire)</span> [m]</p>
+                <p class="category-header clickable" id="resources">Resources</p>
+                <div id="resources-container">
+                    <p class="clickable" id="iron_ore-text">Mine Iron [<span id="iron_ore-press">click here or press </span>a]</p>
+                    <p class="clickable" id="coal-text" hidden>Mine Coal [s]</p>
+                    <p class="clickable" id="copper_ore-text" hidden>Mine Copper [d]</p>
+                </div>
+                <p class="category-header clickable" id="furnace">Furnace Loading</p>
+                <div id="furnace-container">
+                    <p class="clickable" id="load-iron_ore-text" hidden>Load Iron Into Furnace 1 [j]</p>
+                    <p class="clickable" id="load-coal-text" hidden>Load Coal Into Furnace 1 [k]</p>
+                    <p class="clickable" id="load-copper_ore-text" hidden>Load Copper Into Furnace 2 [l]</p>
+                    <p class="clickable" id="load_coal2-text" hidden>Load Coal Into Furnace 2 [K]</p>
+                </div>
+                <p class="category-header clickable" id="manufacturing">Manufacturing</p>
+                <div id="manufacturing-container">
+                    <p class="clickable" id="iron_plate-text" hidden>Make Iron Plate <span class="cost">(Cost: 1 iron bar)</span> [z]</p>
+                    <p class="clickable" id="copper_wire-text" hidden>Make Copper Wire <span class="cost">(Cost: 1 copper bar, yields 5)</span> [x]</p>
+                </div>
+                <p class="category-header clickable" id="assembly">Assembly</p>
+                <div id="assembly-container">
+                    <p class="clickable" id="iron_bulkhead-text" hidden>Assemble Iron Bulkhead <span class="cost">(Cost: 5 iron plates)</span> [b]</p>
+                    <p class="clickable" id="simple_circuit_board-text" hidden>Assemble Simple Circuit Board <span class="cost">(Cost: 2 Iron Bars, 15 Copper Wire)</span> [n]</p>
+                    <p class="clickable" id="small_engine-text" hidden>Assemble Small Engine <span class="cost">(Cost: 3 Iron Bars, 2 Copper Bars, 10 Copper Wire)</span> [m]</p>
+                </div>
             </div>      
             <div id="furnace1-container" class="border-container furnace-container" hidden>
                 <div id="furnace1-inner" class="furnace-inner"></div>

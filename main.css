@@ -23,6 +23,45 @@ li {
     user-select: none;
 }
 
+.category-header {
+    position: relative;
+    text-decoration: underline;
+}
+
+/* .category-header:after {
+    display:inline-block;
+    content:"";
+    height:1px;
+    background: white;
+    position: absolute;
+    width: 75%;
+    top: 50%;
+    margin-top: -1px;
+    margin-left: 1em;
+} */
+
+i {
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    margin-top: -2px;
+}
+
+P:not(.category-header) {
+    margin-left: 1em;
+}
+
+.up {
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+}
+
+.down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+}
+
 #settings-menu {
     position: absolute;
     display: none;

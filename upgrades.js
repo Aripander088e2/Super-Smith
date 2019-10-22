@@ -15,6 +15,7 @@ let ironForging = {name:'Iron Forging',cost:65,bought:false,func(){
     $('#load-iron_ore-text').click(ironToFurnace);
     $('#load-coal-text').show()
     $('#load-coal-text').click(() => {coalToFurnace(furnace1)});
+    $('#furnace').show();
 }}
 
 let copperForging = {name:'Copper Forging',cost:450,bought:false,func(){
@@ -102,6 +103,7 @@ let ironPlateManufacturing = {name:'Iron Plate Manufacturing',cost:300,bought:fa
     produceKeyFuncs.z = () => {manufacture(iron_plate)};
     $('#iron_plate-text').show();
     $('#iron_plate-text').click(() => {manufacture(iron_plate)});
+    $('#manufacturing').show();
 }};
 
 let copperWireManufacturing = {name:'Copper Wire Manufacturing',cost:700,bought:false,func(){
@@ -116,6 +118,7 @@ let ironBulkheadAssembly = {name:'Iron Bulkhead Assembly',cost:600,bought:false,
     //upgrades.push(improvedManufacturing);
     $('#iron_bulkhead-text').show();
     $('#iron_bulkhead-text').click(() => {manufacture(iron_bulkhead)});
+    $('#assembly').show();
 }};
 
 let simpleCircuitBoardAssembly = {name:'Simple Circuit Board Assembly',cost:1200,bought:false,func(){

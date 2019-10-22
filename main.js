@@ -66,6 +66,13 @@ var universalKeyFuncs = {
 }
 $('#production').click(()=>{changeMode('produce')});
 
+$('.category-header').click((e)=>{
+    $('#' + (e.target.id) + '-container').toggle();
+})
+
+for (let i of ['furnace', 'manufacturing', 'assembly'])
+    $('#' + i).hide();
+
 var modeDict = {
     'produce':{key:'i',
         show:['production-container']
