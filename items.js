@@ -39,13 +39,13 @@ var player = {
 var furnace1 = {
     inventory: {iron_ore:0,coal:0},
     maxCapacity:{iron_ore:5,coal:10},
-    speed: 1,
+    speed: 3,
     name:'furnace1'
 }
 
 var furnace2 = {
     inventory: {copper_ore:0,coal:0},
     maxCapacity:{copper_ore:5,coal:10},
-    speed: 1,
+    speed: 3,
     name:'furnace2'
 }
