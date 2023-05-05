@@ -1,9 +1,9 @@
-var iron_ore = {name:'iron_ore',val:2};
-var coal = {name:'coal',val:3};
-var copper_ore = {name:'copper_ore',val:6}
+var iron_ore = {name:'iron_ore',val:20};
+var coal = {name:'coal',val:30};
+var copper_ore = {name:'copper_ore',val:60}
 
-var iron_bar = {name:'iron_bar',val:20};
-var copper_bar = {name:'copper_bar',val:40};
+var iron_bar = {name:'iron_bar',val:200};
+var copper_bar = {name:'copper_bar',val:400};
 
 var copper_wire = {name:'copper_wire',val:11,recipe:{copper_bar:1},output:5};
 var iron_plate = {name:'iron_plate',val: 25, recipe:{iron_bar:1}};
@@ -30,7 +30,7 @@ var ships = {small_hauler:small_hauler,small_transport:small_transport,small_fig
 
 var player = {
     inventory: {},
-    maxCapacity: {iron_ore:20,coal:40,copper_ore:20,iron_bar:20,copper_bar:20,
+    maxCapacity: {iron_ore:20,coal:40,copper_ore:20,iron_bar:2000,copper_bar:2000,
     copper_wire:50,iron_plate:20,iron_bulkhead:6,simple_circuit_board:15,small_engine:9,small_life_support:4,
     small_hauler:10,small_transport:10,small_fighter:10},
     name:'player'
