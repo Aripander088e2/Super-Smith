@@ -1,6 +1,6 @@
-var iron_ore = {name:'iron_ore',val:20};
-var coal = {name:'coal',val:30};
-var copper_ore = {name:'copper_ore',val:60}
+var iron_ore = {name:'iron_ore',val:2000};
+var coal = {name:'coal',val:3000};
+var copper_ore = {name:'copper_ore',val:6000}
 
 var iron_bar = {name:'iron_bar',val:200};
 var copper_bar = {name:'copper_bar',val:400};
