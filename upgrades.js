@@ -36,21 +36,21 @@ let improvedFurnaceCapacity = {name:'Improved Furnace Capacity',cost:120,bought:
 }};
 
 let improvedFurnaceSpeed = {name:'Furnace Speed',cost:150,bought:false,func(){
-    furnace1.speed += 3.3;
-    furnace2.speed += 3.3;
+    furnace1.speed += 43.3;
+    furnace2.speed += 43.3;
     upgrades.push(improvedFurnaceCapacity);
     upgrades.push(improvedFurnaceLoading);
     upgrades.push(improvedCoalMining);
 }};
 
 let improvedFurnaceSpeed2 = {name:'Furnace Speed II',cost:500,bought:false,func(){
-    furnace1.speed += 2.9;
-    furnace2.speed += 2.9;
+    furnace1.speed += 42.9;
+    furnace2.speed += 42.9;
 }};
 
 let improvedFurnaceSpeed3 = {name:'Furnace Speed III',cost:1500,bought:false,func(){
-    furnace1.speed += 2.9;
-    furnace2.speed += 2.9;
+    furnace1.speed += 42.9;
+    furnace2.speed += 42.9;
 }};
 
 let improvedFurnaceSpeed4 = {name:'Furnace Speed IV',cost:10000,bought:false,func(){
